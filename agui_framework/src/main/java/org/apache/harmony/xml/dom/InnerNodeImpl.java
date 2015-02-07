@@ -18,7 +18,9 @@ package org.apache.harmony.xml.dom;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import libcore.util.Objects;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
@@ -208,7 +210,11 @@ public abstract class InnerNodeImpl extends LeafNodeImpl {
 
         Node next = child.getNextSibling();
         if (next == null) {
-            return hasTextContent(child) ? child.getTextContent() : "";
+        	String content = "";
+        	if (hasTextContent(child)) {
+    			content = ((NodeImpl) child).getTextContent();;
+        	}
+        	return  content;
         }
 
         StringBuilder buf = new StringBuilder();

@@ -58,7 +58,7 @@ class DocumentBuilderImpl extends DocumentBuilder {
     private boolean namespaceAware;
     // adding a new field? don't forget to update reset().
 
-    @Override public void reset() {
+    public void reset() {
         coalescing = false;
         entityResolver = null;
         errorHandler = null;

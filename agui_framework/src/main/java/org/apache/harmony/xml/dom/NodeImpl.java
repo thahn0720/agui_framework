@@ -308,7 +308,7 @@ public abstract class NodeImpl implements Node {
     public final String getBaseURI() {
         switch (getNodeType()) {
             case DOCUMENT_NODE:
-                return sanitizeUri(((Document) this).getDocumentURI());
+                return sanitizeUri(((DocumentImpl) this).getDocumentURI());
 
             case ELEMENT_NODE:
                 Element element = (Element) this;
@@ -368,7 +368,7 @@ public abstract class NodeImpl implements Node {
 
     private String getParentBaseUri() {
         Node parentNode = getParentNode();
-        return parentNode != null ? parentNode.getBaseURI() : null;
+        return parentNode != null ? ((NodeImpl) parentNode).getBaseURI() : null;
     }
 
     /**
@@ -663,7 +663,7 @@ public abstract class NodeImpl implements Node {
 
             } else if (a instanceof Node) {
                 if (!(b instanceof Node)
-                        || !((Node) a).isEqualNode((Node) b)) {
+                        || !((NodeImpl) a).isEqualNode((Node) b)) {
                     return false;
                 }
 
@@ -684,7 +684,7 @@ public abstract class NodeImpl implements Node {
             Node bNode = aNode.getLocalName() == null
                     ? b.getNamedItem(aNode.getNodeName())
                     : b.getNamedItemNS(aNode.getNamespaceURI(), aNode.getLocalName());
-            if (bNode == null || !aNode.isEqualNode(bNode)) {
+            if (bNode == null || !((NodeImpl) aNode).isEqualNode(bNode)) {
                 return false;
             }
         }

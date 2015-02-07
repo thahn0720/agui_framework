@@ -39,7 +39,6 @@ public class DocumentBuilderFactoryImpl extends DocumentBuilderFactory {
         throw new IllegalArgumentException(name);
     }
 
-    @Override
     public boolean getFeature(String name) throws ParserConfigurationException {
         if (name == null) {
             throw new NullPointerException("name == null");
@@ -86,7 +85,6 @@ public class DocumentBuilderFactoryImpl extends DocumentBuilderFactory {
         throw new IllegalArgumentException(name);
     }
 
-    @Override
     public void setFeature(String name, boolean value)
             throws ParserConfigurationException {
         if (name == null) {

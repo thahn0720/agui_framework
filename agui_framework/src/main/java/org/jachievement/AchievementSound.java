@@ -40,6 +40,7 @@ import java.io.IOException;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.Line;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineEvent.Type;
 import javax.sound.sampled.LineListener;
@@ -100,7 +101,8 @@ public class AchievementSound extends Thread {
 	 *             if the audio file can't be find
 	 */
 	protected void play() throws LineUnavailableException, IOException {
-		Clip clip = AudioSystem.getClip();
+//		Clip clip = AudioSystem.getClip();
+		Clip clip = (Clip) AudioSystem.getLine(new Line.Info(Clip.class));
 		clip.addLineListener(listener);
 		clip.open(audioInputStream);
 		try {

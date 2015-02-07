@@ -70,7 +70,6 @@ public abstract class RBase {
 	
 	public void parse() {
 		try {
-//			mPackageName = pName;//"dksxogudsla.java.agui"; // .internal
 			String packageName = mPackageName.replace(".", "/");
 			File dirs = null;
 			if (isJar()) {
@@ -97,7 +96,7 @@ public abstract class RBase {
 			}
 			write(makePackage(mPackageName));
 			write(startClass());
-//
+
 			if (mAbsolutePath.equals(Global.corePath)) {
 				mClassBuildConfig = Class.forName(mPackageName+".BuildConfig");
 			} else {
@@ -124,7 +123,7 @@ public abstract class RBase {
 			parseMenuByDOM();
 			mStartIndex += INDEX_GAP;
 			parseRawByDOM();
-//			
+			
 			write(endClass());
 			if (isWritable) {
 				mROS.close();
@@ -369,7 +368,6 @@ public abstract class RBase {
 		write(endClass());
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void parseIdByDOM() throws JDOMException, IOException, URISyntaxException, Exception {
 		write(makePublicStaticFinalClass("id"));
 		
@@ -450,7 +448,6 @@ public abstract class RBase {
 		write(endClass());
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void parseValuesByDOM() throws Exception {
 		
 		String[][] container = new String[][]{{mAbsolutePath+"/res/values/values.xml", "string"}

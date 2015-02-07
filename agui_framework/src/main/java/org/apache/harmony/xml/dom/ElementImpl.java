@@ -131,7 +131,7 @@ public class ElementImpl extends InnerNodeImpl implements Element {
      */
     Element getElementById(String name) {
         for (Attr attr : attributes) {
-            if (attr.isId() && name.equals(attr.getValue())) {
+            if (((AttrImpl) attr).isId() && name.equals(attr.getValue())) {
                 return this;
             }
         }

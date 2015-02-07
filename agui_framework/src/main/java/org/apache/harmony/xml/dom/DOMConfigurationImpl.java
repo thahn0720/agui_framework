@@ -340,11 +340,11 @@ public final class DOMConfigurationImpl implements DOMConfiguration {
         try {
             parameter.set(this, value);
         } catch (NullPointerException e) {
-            throw new DOMException(DOMException.TYPE_MISMATCH_ERR,
-                    "Null not allowed for " + name);
+            throw new DOMException(DOMException.SYNTAX_ERR,
+                    "TYPE_MISMATCH_ERR : Null not allowed for " + name);
         } catch (ClassCastException e) {
-            throw new DOMException(DOMException.TYPE_MISMATCH_ERR,
-                    "Invalid type for " + name + ": " + value.getClass());
+            throw new DOMException(DOMException.SYNTAX_ERR,
+                    "TYPE_MISMATCH_ERR : Invalid type for " + name + ": " + value.getClass());
         }
     }
 

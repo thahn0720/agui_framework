@@ -53,7 +53,7 @@ final class SAXParserImpl extends SAXParser {
         }
     }
 
-    @Override public void reset() {
+    public void reset() {
         /*
          * The exceptions are impossible. If any features are unrecognized or
          * unsupported, construction of this instance would have failed.
