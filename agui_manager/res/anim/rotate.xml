@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rotate
+  xmlns:agui="http://schemas.agui.com/apk/res/agui"
+  agui:fromDegrees="0"
+  agui:toDegrees="360"
+  agui:interpolator="@agui:anim/linear_interpolator"
+  agui:pivotX="50%"
+  agui:pivotY="50%"
+  agui:duration="2000"
+  agui:startOffset="0"
+/>
+<!-- agui:pivotX="50%"
+  agui:pivotY="50%" -->

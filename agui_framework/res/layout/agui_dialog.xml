@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:agui="http://schemas.agui.com/apk/res/agui"
+  agui:layout_width="wrap_content"
+  agui:layout_height="wrap_content"
+  agui:background="@drawable/test"
+  >
+  
+	  <TextView agui:id="@agui:id/agui_message"
+	  agui:layout_width="wrap_content"
+	  agui:layout_height="wrap_content"
+	  agui:text="message"
+	  />
+  
+	  <Button agui:id="@agui:id/agui_yes"
+	  agui:layout_width="wrap_content"
+	  agui:layout_height="wrap_content"
+	  agui:text="yes"
+	  agui:layout_below="@+id/agui_message"
+	  />
+
+	  <Button agui:id="@agui:id/agui_no"
+	  agui:layout_width="wrap_content"
+	  agui:layout_height="wrap_content"
+	  agui:text="no"
+	  agui:layout_toRightOf="@agui:id/agui_yes"
+	  agui:layout_below="@agui:id/agui_message"
+	  />
+	  
+</RelativeLayout>

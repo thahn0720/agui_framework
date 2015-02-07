@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:agui="http://schemas.agui.com/apk/res/agui"
+    agui:layout_width="match_parent"
+    agui:layout_height="wrap_content">
+    <TextView 
+    	agui:id="@agui:id/text"
+        agui:layout_width="wrap_content"
+    	agui:layout_height="wrap_content"
+    	agui:text="text"
+    	agui:layout_centerVertical="true"
+        />
+    <CheckBox
+        agui:layout_width="wrap_content"
+    	agui:layout_height="wrap_content"
+    	agui:layout_alignParentRight="true"
+        />
+</RelativeLayout>
+<!-- <CheckedTextView xmlns:agui="http://schemas.agui.com/apk/res/agui" -->
+<!--     agui:id="@agui:id/text1" -->
+<!--     agui:layout_width="match_parent" -->
+<!--     agui:layout_height="wrap_content" -->
+<!--     agui:gravity="center_vertical" -->
+<!--     /> -->
+<!--     agui:layout_height="?agui:attr/listPreferredItemHeightSmall" -->
+<!--     agui:textAppearance="?agui:attr/textAppearanceListItemSmall" -->
+<!--     agui:checkMark="?agui:attr/textCheckMark" -->
+<!--     agui:paddingStart="?agui:attr/listPreferredItemPaddingStart" -->
+<!--     agui:paddingEnd="?agui:attr/listPreferredItemPaddingEnd"  -->

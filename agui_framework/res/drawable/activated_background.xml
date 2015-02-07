@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:agui="http://schemas.agui.com/apk/res/agui">
+    <item agui:state_activated="true" agui:drawable="@agui:drawable/list_selector_background_selected" />
+    <item agui:drawable="@agui:color/transparent" />
+</selector>

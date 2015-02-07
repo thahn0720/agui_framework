@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:agui="http://schemas.agui.com/apk/res/agui"
+    package="thahn.java.agui.test"
+    agui:versionCode="1"
+    agui:versionName="1.0" >
+
+    <uses-sdk agui:minSdkVersion="5" />
+
+<!--             agui:screenPositionX=""
+            agui:screenPositionY=""
+            agui:windowPositionX=""
+            agui:windowPositionY=""
+            agui:absoultePositionX=""
+            agui:absoultePositionY="" -->
+    <application
+        agui:icon="@drawable/ic_launcher"
+        agui:label="@string/app_name" 
+        agui:width="500"
+        agui:height="500"
+        >
+        <activity
+            agui:name=".SetResultTestActivity"
+            
+            agui:label="SetResultTestActivity"
+            agui:width="300"
+            agui:height="400"
+            >
+            <intent-filter>
+                <action agui:name="agui.intent.action.MAIN" />
+                <category agui:name="agui.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action agui:name="wifi.smartphone.lge.WifiLogger" />
+            </intent-filter>
+        </activity>
+		
+    </application>
+
+</manifest>

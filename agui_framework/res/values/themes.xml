@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- above all, parent should be positioned on top -->
+    <!-- naming : Widget.View.~~, 명시적으로 부모를 지정하지 않으면 네이밍에서의 .을 따라 부모를 찾아 지정함, 그렇지 않으면 네이밍이 엄청 중복  -->
+    
+<!--     <style name="Theme"> -->
+<!--         <item name="agui:Window_windowBackground">0xffffffff</item> -->
+<!--         <item name="agui:Window_windowIsFloating">1</item> -->
+<!--     </style> -->
+    
+    <style name="Theme">
+        <item name="Window_windowBackground">0xffffffff</item>
+        <item name="Window_windowIsFloating">1</item>
+        <item name="Theme_activatedBackgroundIndicator">@agui:drawable/activated_background</item>
+        <!-- 		<item name="Window_windowFrame">@null</item> -->
+<!--         <item name="Window_windowNoTitle">false</item> -->
+<!--         <item name="Window_windowFullscreen">false</item> -->
+<!--         <item name="Window_windowOverscan">false</item>  -->
+<!-- 		<item name="Window_windowContentOverlay">@null</item> -->
+<!--         <item name="Window_windowShowWallpaper">false</item> -->
+<!--         <item name="Window_windowTitleStyle">@android:style/WindowTitle</item> -->
+<!--         <item name="Window_windowTitleSize">25dip</item> -->
+<!--         <item name="Window_windowTitleBackgroundStyle">@android:style/WindowTitleBackground</item> -->
+<!--         <item name="agui:Window_windowAnimationStyle">@android:style/Animation.Activity</item> -->
+<!--         <item name="agui:Window_windowSoftInputMode">stateUnspecified|adjustUnspecified</item> -->
+<!--         <item name="Window_windowActionBar">false</item> -->
+<!--         <item name="Window_windowActionModeOverlay">false</item> -->
+<!--         <item name="Window_windowCloseOnTouchOutside">false</item> -->
+<!--         <item name="Window_windowTranslucentStatus">false</item> -->
+<!--         <item name="Window_windowTranslucentNavigation">false</item> -->
+    </style>
+    
+    <style name="Theme.NoTitleBar">
+        <item name="Window_windowNoTitle">1</item>
+    </style>
+
+   <!-- Default theme for dialog windows and activities (on API level 10 and lower),
+    which is used by the
+    {@link agui.app.Dialog} class.  This changes the window to be
+    floating (not fill the entire screen), and puts a frame around its
+    contents.  You can set this theme on an activity if you would like to
+    make an activity that looks like a Dialog. -->
+    <style name="Theme.Dialog">
+        <!-- Window attributes -->
+        <item name="Window_windowBackground">0x40000000</item>
+        <item name="Window_windowIsFloating">1</item>
+    </style>    
+    
+</resources>

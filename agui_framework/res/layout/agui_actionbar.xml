@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:agui="http://schemas.agui.com/apk/res/agui"
+	agui:id="@agui:id/actionbar_root"
+	agui:layout_width="match_parent"
+	agui:layout_height="wrap_content"
+	agui:padding="2px"
+>
+	<ImageView 
+	agui:id="@agui:id/logo"
+	agui:layout_width="wrap_content"
+	agui:layout_height="wrap_content"
+	/>
+	<LinearLayout 
+	agui:layout_width="match_parent"
+	agui:layout_height="wrap_content"
+	agui:layout_toRightOf="@agui:id/logo"
+	agui:layout_toLeftOf="@agui:id/item_container"
+	agui:orientation="vertical"
+	agui:layout_centerVertical="true"
+	>
+		<TextView 
+		agui:id="@agui:id/title"
+		agui:layout_width="match_parent"
+		agui:layout_height="wrap_content"
+		agui:text="title"
+		agui:gravity="left"
+		/>
+		
+		<TextView 
+		agui:id="@agui:id/subtitle"
+		agui:layout_width="match_parent"
+		agui:layout_height="wrap_content"
+		agui:text="subtitle"
+		agui:visibility="gone"
+		agui:gravity="left"
+		/> 
+	</LinearLayout>
+	
+	<LinearLayout 
+	agui:id="@agui:id/item_container"
+	agui:layout_width="wrap_content"
+	agui:layout_height="wrap_content"
+	agui:layout_toLeftOf="@agui:id/system_btn"
+	>
+		
+	</LinearLayout>
+	<LinearLayout 
+		agui:id="@agui:id/system_btn"
+		agui:layout_width="wrap_content"
+		agui:layout_height="wrap_content"
+		agui:layout_alignParentRight="true"
+	>
+		<Button 
+			agui:id="@agui:id/minimize"
+			agui:layout_width="30px"
+			agui:layout_height="30px"
+			/>
+		<Button 
+			agui:id="@agui:id/maximize"
+			agui:layout_width="30px"
+			agui:layout_height="30px"
+			/>
+		<Button 
+			agui:id="@agui:id/exit"
+			agui:layout_width="30px"
+			agui:layout_height="30px"
+			/>
+	</LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:agui="http://schemas.agui.com/apk/res/agui"
+	agui:layout_width="match_parent"
+	agui:layout_height="wrap_content"
+	agui:orientation="vertical"
+	agui:background="#ffffff"
+>
+	<LinearLayout 
+	agui:layout_width="match_parent"
+	agui:layout_height="wrap_content"
+	agui:orientation="horizontal"
+	agui:layout_centerVertical="true"
+	>
+		<TextView 
+		agui:id="@+id/user_name_text"
+		agui:layout_width="wrap_content"
+		agui:layout_height="wrap_content"
+		agui:text="user name"
+		agui:margin_right="10dip"
+		/>
+		
+		<EditText 
+		agui:id="@+id/user_name_edit"
+		agui:layout_width="match_parent"
+		agui:layout_height="wrap_content"
+		agui:hint="input user name"
+		/> 
+	</LinearLayout>
+	
+	<LinearLayout 
+	agui:layout_width="match_parent"
+	agui:layout_height="wrap_content"
+	agui:orientation="horizontal"
+	agui:layout_centerVertical="true"
+	>
+		<TextView 
+		agui:id="@+id/phone_number_text"
+		agui:layout_width="wrap_content"
+		agui:layout_height="wrap_content"
+		agui:text="phone number"
+		agui:margin_right="10dip"
+		/>
+		
+		<EditText 
+		agui:id="@+id/phone_number_edit"
+		agui:layout_width="match_parent"
+		agui:layout_height="wrap_content"
+		agui:hint="input phone number"
+		/> 
+	</LinearLayout>
+	
+	<Button agui:id="@+id/btn_sync"
+	agui:layout_width="wrap_content"
+	agui:layout_height="wrap_content"
+	agui:text="sync"
+	/>
+</LinearLayout>

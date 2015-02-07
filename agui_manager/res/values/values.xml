@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, Intro!</string>
+    <string name="app_name">DoubleGoer</string>
+    
+    <string name="match_des_0_1">01</string>
+    <string name="match_des_0_2">02</string>
+    <string name="match_des_10_1">101</string>
+    <string name="match_des_10_2">102</string>
+    <string name="match_des_20_1">201</string>
+    <string name="match_des_20_2">202</string>
+    <string name="match_des_30_1">302</string>
+    <string name="match_des_30_2">302</string>
+    <string name="match_des_40_1">402</string>
+    <string name="match_des_40_2">402</string>
+    <string name="match_des_50_1">502</string>
+    <string name="match_des_50_2">502</string>
+    <string name="match_des_60_1">602</string>
+    <string name="match_des_60_2">602</string>
+    <string name="match_des_70_1">702</string>
+    <string name="match_des_70_2">702</string>
+    <string name="match_des_80_1">802</string>
+    <string name="match_des_80_2">802</string>
+    <string name="match_des_90_1">902</string>
+    <string name="match_des_90_2">902</string>
+    <string name="match_des_100_1">1002</string>
+    <string name="match_des_100_2">1002</string>
+    
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
+</resources>

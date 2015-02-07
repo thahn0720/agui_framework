@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2011 Jake Wharton
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+<!--     <style name="Theme.PageIndicatorDefaults" parent="agui:Theme"> -->
+<!--         <item name="ViewPagerIndicator_vpiCirclePageIndicatorStyle">@style/Widget.CirclePageIndicator</item> -->
+<!--         <item name="ViewPagerIndicator_vpiTitlePageIndicatorStyle">@style/Widget.TitlePageIndicator</item> -->
+<!--         <item name="ViewPagerIndicator_vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item> -->
+<!--         <item name="ViewPagerIndicator_vpiTabTextStyle">@style/Widget.TabPageIndicator.Text</item> -->
+<!--     </style> -->
+    
+    <style name="Widget"></style>
+
+    <style name="Widget.CirclePageIndicator" parent="Widget">
+        <item name="CirclePageIndicator_centered">@bool/default_circle_indicator_centered</item>
+        <item name="CirclePageIndicator_fillColor">@color/default_circle_indicator_fill_color</item>
+        <item name="CirclePageIndicator_orientation">@integer/default_circle_indicator_orientation</item>
+        <item name="CirclePageIndicator_radius">@dimen/default_circle_indicator_radius</item>
+        <item name="CirclePageIndicator_snap">@bool/default_circle_indicator_snap</item>
+        <item name="CirclePageIndicator_strokeColor">@color/default_circle_indicator_stroke_color</item>
+        <item name="CirclePageIndicator_strokeWidth">@dimen/default_circle_indicator_stroke_width</item>
+    </style>
+
+    <style name="Widget.TitlePageIndicator" parent="Widget">
+        <item name="TitlePageIndicator_clipPadding">@dimen/default_title_indicator_clip_padding</item>
+        <item name="TitlePageIndicator_footerColor">@color/default_title_indicator_footer_color</item>
+        <item name="TitlePageIndicator_footerLineHeight">@dimen/default_title_indicator_footer_line_height</item>
+        <item name="TitlePageIndicator_footerIndicatorStyle">@integer/default_title_indicator_footer_indicator_style</item>
+        <item name="TitlePageIndicator_footerIndicatorHeight">@dimen/default_title_indicator_footer_indicator_height</item>
+        <item name="TitlePageIndicator_footerIndicatorUnderlinePadding">@dimen/default_title_indicator_footer_indicator_underline_padding</item>
+        <item name="TitlePageIndicator_footerPadding">@dimen/default_title_indicator_footer_padding</item>
+        <item name="TitlePageIndicator_selectedColor">@color/default_title_indicator_selected_color</item>
+        <item name="TitlePageIndicator_selectedBold">@bool/default_title_indicator_selected_bold</item>
+        <item name="TitlePageIndicator_textColor">@color/default_title_indicator_text_color</item>
+        <item name="TitlePageIndicator_textSize">@dimen/default_title_indicator_text_size</item>
+        <item name="TitlePageIndicator_titlePadding">@dimen/default_title_indicator_title_padding</item>
+        <item name="TitlePageIndicator_topPadding">@dimen/default_title_indicator_top_padding</item>
+    </style>
+    
+    <style name="Widget.TabPageIndicator" parent="Widget">
+        <item name="agui:View_gravity">center_horizontal</item>
+        <item name="agui:View_background">@drawable/vpi__tab_indicator</item>
+        <item name="agui:View_paddingLeft">22dip</item>
+        <item name="agui:View_paddingRight">22dip</item>
+        <item name="agui:View_paddingTop">12dp</item>
+        <item name="agui:View_paddingBottom">12dp</item>
+    </style>
+    <style name="Widget.TabPageIndicator.Text" parent="Widget">
+<!--         <item name="agui:View_textAppearance">@style/TextAppearance.TabPageIndicator</item> -->
+        <item name="agui:TextView_textColor">@color/vpi__background_holo_dark</item>
+        <item name="agui:TextView_textSize">12sp</item>
+        <item name="agui:TextView_textStyle">bold</item>
+        <item name="agui:TextView_maxLines">1</item>
+    </style>
+    
+    <style name="TextAppearance.TabPageIndicator" parent="Widget">
+        
+    </style>
+</resources>

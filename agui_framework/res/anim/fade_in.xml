@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alpha
+	xmlns:agui="http://schemas.agui.com/apk/res/agui" 
+	agui:duration="1000"
+	agui:fromAlpha="0.0"
+	agui:toAlpha="1.0"
+	agui:interpolator="@agui:anim/accelerate_interpolator"
+	/>
+ 
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<alpha
+	xmlns:agui="http://schemas.agui.com/apk/res/agui" 
+	agui:duration="@agui:integer/config_longAnimTime"
+	agui:toAlpha="1.0"
+	agui:fromAlpha="0.0"
+	agui:interpolator="@agui:anim/accelerate_interpolator"
+	/> -->	

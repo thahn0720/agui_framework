@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:agui="http://schemas.agui.com/apk/res/agui"
+	agui:id="@agui:id/agui_drawer_home"
+	agui:layout_width="wrap_content"
+	agui:layout_height="wrap_content"
+	agui:text="Text1"
+	/>

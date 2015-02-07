@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:agui="http://schemas.agui.com/apk/res/agui">
+  <item agui:drawable="@drawable/checked_sel" agui:state_checked="true" />   
+  <item agui:drawable="@drawable/checked_sel" agui:state_window_focused="true" agui:state_focused="true"/>
+  <item agui:drawable="@drawable/checked_nor" agui:state_checked="false"/> 
+</selector>

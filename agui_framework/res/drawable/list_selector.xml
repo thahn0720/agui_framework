@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:agui="http://schemas.agui.com/apk/res/agui">
+  <item agui:drawable="@agui:drawable/btn_sel" agui:state_pressed="true" />   
+  <item agui:drawable="@agui:color/transparent" />
+<!--   <item agui:drawable="@agui:drawable/btn_sel" agui:state_window_focused="true" agui:state_focused="true"/> -->
+</selector>

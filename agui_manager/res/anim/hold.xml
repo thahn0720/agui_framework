@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<translate
+	xmlns:agui="http://schemas.agui.com/apk/res/agui" 
+	agui:duration="2000"
+	agui:fromXDelta="400"
+	agui:toXDelta="0"
+	agui:interpolator="@agui:anim/bounce_interpolator"
+	/>

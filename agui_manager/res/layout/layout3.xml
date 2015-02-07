@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:agui="http://schemas.agui.com/apk/res/agui"
+	agui:id="@+id/root"	
+	agui:layout_width="match_parent"
+    agui:layout_height="match_parent"
+	agui:orientation="vertical"    
+>
+	<TextView 
+	    agui:id="@+id/text1"
+	    agui:layout_width="wrap_content"
+	    agui:layout_height="wrap_content"
+	    agui:singleLine="false"
+	    agui:text="123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"
+	    >
+   </TextView> 
+	
+	<TextView 
+	    agui:id="@+id/text2"
+	    agui:layout_width="wrap_content"
+	    agui:layout_height="wrap_content"
+	    agui:singleLine="false"
+	    agui:text="123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"
+	    >
+    </TextView>
+   	<TextView 
+	    agui:id="@+id/text3"
+	    agui:layout_width="wrap_content"
+	    agui:layout_height="wrap_content"
+	    agui:singleLine="false"
+	    agui:text="123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"
+	    agui:weight="1"
+	    >
+	</TextView>
+	<RelativeLayout 
+	agui:id="@+id/root2"	
+	agui:layout_width="wrap_content"
+    agui:layout_height="wrap_content"
+	>
+		<Button 
+		    agui:id="@+id/view2"
+		    agui:layout_width="wrap_content"
+		    agui:layout_height="wrap_content"
+		    agui:singleLine="false"
+		    agui:text="123"
+		    agui:layout_toRightOf="@+id/view1"
+		    agui:gravity="center"
+		    >
+	    </Button>
+	  
+	   	<Button 
+	   		agui:id="@+id/view3"
+		    agui:layout_width="wrap_content"
+		    agui:layout_height="wrap_content"
+		    agui:singleLine="false"
+		    agui:text="123"
+		    agui:layout_below="@+id/view2"
+		    agui:gravity="center"
+		    >
+		</Button>
+		
+		  <Button 
+		    agui:id="@+id/view1"
+		    agui:layout_width="wrap_content"
+		    agui:layout_height="wrap_content"
+		    agui:singleLine="false"
+		    agui:text="123"
+		    agui:gravity="center"
+		    >
+	   </Button> 
+	</RelativeLayout>
+</LinearLayout>

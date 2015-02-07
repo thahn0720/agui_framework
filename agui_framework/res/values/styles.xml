@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="View">
+        <item name="agui:View_id">-1</item>
+        <item name="agui:View_layout_width">-2</item>
+        <item name="agui:View_layout_height">-2</item>
+        <item name="agui:View_background">-1</item>
+        <item name="agui:View_padding">0</item>
+        <item name="agui:View_paddingLeft">0</item>
+        <item name="agui:View_paddingTop">0</item>
+        <item name="agui:View_paddingRight">0</item>
+        <item name="agui:View_paddingBottom">0</item>
+        <item name="agui:View_layout_margin">0</item>
+        <item name="agui:View_layout_marginLeft">0</item>
+        <item name="agui:View_layout_marginTop">0</item>
+        <item name="agui:View_layout_marginRight">0</item>
+        <item name="agui:View_layout_marginBottom">0</item>
+        <item name="agui:View_minWidth">0</item>
+        <item name="agui:View_minHeight">0</item>
+        <item name="agui:View_gravity">thahn.java.agui.view.Gravity.LEFT|thahn.java.agui.view.Gravity.TOP</item>
+        <item name="agui:View_scrollX">0</item>
+        <item name="agui:View_scrollY">0</item>
+        <item name="agui:View_focusable">0</item>
+        <item name="agui:View_clickable">1</item>
+        <item name="agui:View_visibility">visible</item>
+        <!--  -->
+    </style>
+    
+    <style name="TextView" parent="View" >
+        <item name="agui:View_focusable">1</item>
+        <item name="agui:TextView_singleLine">0</item>
+    </style>
+    
+    <style name="EditText" parent="TextView" >
+        <item name="agui:View_focusable">1</item>
+        <item name="agui:View_clickable">1</item>
+    </style>
+    
+    <style name="Button" parent="TextView" >
+        <item name="agui:View_background">thahn.java.agui.widget.ViewName.WIDGET_BUTTON_CODE</item>
+        <item name="agui:View_minWidth">30</item>
+        <item name="agui:View_minHeight">30</item>
+        <item name="agui:View_gravity">thahn.java.agui.view.Gravity.CENTER</item>
+        <item name="agui:View_focusable">0</item>
+        <item name="agui:View_clickable">1</item>
+    </style>
+    
+    <style name="CompoundButton" parent="View" >
+        <item name="agui:View_focusable">0</item>
+        <item name="agui:View_clickable">1</item>
+    </style>
+    
+    <style name="CheckBox" parent="CompoundButton" >
+    	<item name="agui:View_background">thahn.java.agui.widget.ViewName.WIDGET_BUTTON_CODE</item>
+    	<item name="agui:CompoundButton_checked">0</item>
+    </style>
+
+    <style name="Scrollbar" parent="View">
+        <item name="agui:View_background">thahn.java.agui.widget.ViewName.WIDGET_SCROLLBAR_CODE</item>
+        <item name="agui:View_minWidth">20</item>
+        <item name="agui:View_minHeight">60</item>
+    </style>
+	
+    <style name="ProgressBar" parent="View">
+        <item name="agui:View_background">-1</item>
+        <item name="agui:View_focusable">0</item>
+        <item name="agui:View_clickable">0</item>
+        <item name="agui:ProgressBar_indeterminateDrawable">thahn.java.agui.widget.ViewName.WIDGET_PROGRESS_BAR_CODE</item>
+    </style>
+    
+    <style name="SeekBar" parent="View">
+        <item name="agui:View_background">thahn.java.agui.widget.ViewName.WIDGET_SEEK_BAR_CODE</item>
+        <item name="agui:View_focusable">0</item>
+        <item name="agui:View_clickable">0</item>
+    </style>
+</resources>

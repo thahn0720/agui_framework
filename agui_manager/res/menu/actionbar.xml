@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:agui="http://schemas.agui.com/apk/res/agui">
+	<item 
+		agui:id="@+id/menu_refresh"
+		agui:title="refresh"
+		agui:icon="@drawable/test"
+		agui:showAsAction="always"
+		agui:orderInCategory="101"
+		/>
+	<item 
+		agui:id="@+id/menu_search"
+		agui:title="search"
+		agui:icon="@drawable/test"
+		agui:showAsAction="always|withText"
+		agui:orderInCategory="102"
+		/>	
+	<item 
+		agui:id="@+id/menu_setting"
+		agui:title="setting"
+		agui:icon="@drawable/test"
+		agui:showAsAction="never"
+		agui:orderInCategory="103"
+		/>	
+</menu>

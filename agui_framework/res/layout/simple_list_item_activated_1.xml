@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:agui="http://schemas.agui.com/apk/res/agui"
+	agui:id="@agui:id/text1"
+	agui:layout_width="match_parent"
+	agui:layout_height="wrap_content"
+	agui:text="Text1"
+	agui:background="@agui:drawable/activated_background"
+	/>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView
+	xmlns:agui="http://schemas.agui.com/apk/res/agui"
+    agui:id="@agui:id/list"
+    agui:layout_width="fill_parent"
+    agui:layout_height="fill_parent"
+    />

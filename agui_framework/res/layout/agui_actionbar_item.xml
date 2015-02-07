@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:agui="http://schemas.agui.com/apk/res/agui"
+	agui:layout_width="wrap_content"
+	agui:layout_height="wrap_content"
+>
+	<ImageView 
+	agui:id="@agui:id/item_icon"
+	agui:layout_width="30px"
+	agui:layout_height="30px"
+	/>
+	
+	<TextView 
+	agui:id="@agui:id/item_title"
+	agui:layout_width="wrap_content"
+	agui:layout_height="wrap_content"
+	agui:text="title"
+	agui:visibility="gone"
+	agui:layout_below="@agui:id/item_icon"
+	/>
+</RelativeLayout>

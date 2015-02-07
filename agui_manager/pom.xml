@@ -1,0 +1,16 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>agui_manager</artifactId>
+  <dependencies>
+  	<dependency>
+  		<groupId>thahn.java.agui</groupId>
+  		<artifactId>agui_framework</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
+  <parent>
+  	<groupId>thahn.java.agui</groupId>
+  	<artifactId>agui</artifactId>
+  	<version>0.0.1-SNAPSHOT</version>
+  </parent>
+</project>

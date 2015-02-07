@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:agui="http://schemas.agui.com/apk/res/agui"
+	agui:id="@agui:id/agui_root"	
+	agui:layout_width="match_parent"
+    agui:layout_height="match_parent"
+>
+	  <TextView 
+	    agui:id="@agui:id/agui_message"
+	    agui:layout_width="wrap_content"
+	    agui:layout_height="wrap_content"
+	    agui:singleLine="false"
+	    agui:text="123"
+	    agui:layout_centerHorizontal="true"
+	    agui:layout_alignParentBottom="true"
+ 	    agui:layout_marginBottom="10px"
+	    /> 
+</RelativeLayout>
