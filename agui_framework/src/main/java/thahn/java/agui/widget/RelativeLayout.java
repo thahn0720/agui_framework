@@ -10,7 +10,11 @@ import thahn.java.agui.view.Gravity;
 import thahn.java.agui.view.View;
 import thahn.java.agui.view.ViewGroup;
 
-
+/**
+ * 
+ * @author thAhn
+ *
+ */
 public class RelativeLayout extends ViewGroup {
 	
 	public static final int 									TRUE					= 1;
@@ -66,29 +70,29 @@ public class RelativeLayout extends ViewGroup {
 
 	@Override
 	public void arrange() {
-		for(View v : getChildren()) {
+		for (View v : getChildren()) {
 			checkPositioned(v);
 		}
 		
 		mPolicy.checkChildMaxSizePolicy();
 		mPolicy.checkLayoutMaxSizePolicy();
 		
-		for(View v : getChildren()) {
+		for (View v : getChildren()) {
 			v.setPositioned(false);
 		}
 		
-		for(View v : getChildren()) {
-			if(v.getVisibility() == GONE) continue;
+		for (View v : getChildren()) {
+			if (v.getVisibility() == GONE) continue;
 			ViewGroup.LayoutParams childParams = v.getLayoutParams();
-			if(childParams instanceof RelativeLayout.LayoutParams) {
+			if (childParams instanceof RelativeLayout.LayoutParams) {
 				RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) childParams;
 				int[] rules = params.rules;
-				for(int i=RelativeLayout.CENTER_HORIZONTAL;i<RelativeLayout.RULES_COUNT;++i) {
-					if(rules[i] != FASLE) {
+				for (int i=RelativeLayout.CENTER_HORIZONTAL;i<RelativeLayout.RULES_COUNT;++i) {
+					if (rules[i] != FASLE) {
 						v.setPositioned(true);
 						applyCenterRelation(i, rules[i], v);
 						View relatedView = mRelativeParams.get(v.getId());
-						if(relatedView != null) {
+						if (relatedView != null) {
 							relatedView.setPositioned(true);
 							doDirectionRelation(relatedView, (RelativeLayout.LayoutParams)relatedView.getLayoutParams());
 						}
@@ -101,7 +105,7 @@ public class RelativeLayout extends ViewGroup {
 		int rightMax = Integer.MIN_VALUE;
 		int topMax = Integer.MAX_VALUE;
 		int bottomMax = Integer.MIN_VALUE;
-		for(View v : getChildren()) {
+		for (View v : getChildren()) {
 			v.setPositioned(false);
 			leftMax = Math.min(leftMax, v.getLeft());
 			topMax = Math.min(topMax, v.getTop());
@@ -117,8 +121,8 @@ public class RelativeLayout extends ViewGroup {
 	}
 	
 	private void checkPositioned(View v) {
-		if(v.getVisibility() == GONE) return;
-		if(!v.isPositioned()) {
+		if (v.getVisibility() == GONE) return;
+		if (!v.isPositioned()) {
 			v.setPositioned(true);
 			layoutChild(v);
 		}
@@ -133,7 +137,7 @@ public class RelativeLayout extends ViewGroup {
 		int top = getDrawingTop() + v.getLayoutParams().topMargin;
 		v.onLayout(true, left, top, left + wh[0], top + wh[1]);
 		v.arrange();
-		if(childParams instanceof RelativeLayout.LayoutParams) {
+		if (childParams instanceof RelativeLayout.LayoutParams) {
 			doDirectionRelation(v, (RelativeLayout.LayoutParams)childParams);
 		} 
 	}
@@ -141,17 +145,16 @@ public class RelativeLayout extends ViewGroup {
 	private void doDirectionRelation(View v, RelativeLayout.LayoutParams childParams) {
 		RelativeLayout.LayoutParams params = childParams;
 		int[] rules = params.rules;
-		for(int i=0;i<RelativeLayout.CENTER_HORIZONTAL;++i) {
-			if(rules[i] != FASLE) {
+		for (int i=0;i<RelativeLayout.CENTER_HORIZONTAL;++i) {
+			if (rules[i] != FASLE) {
 				mRelativeParams.put(rules[i], v);
 				applyDirectionRelation(i, rules[i], v);
 			}
-//			Log.e(""+v.getLeft() + ", " + v.getTop() + "," + (v.getRight()) + ", " + (v.getBottom()));
 		}
 	}
 	
 	private void applyDirectionRelation(int which, int value, View v) {
-		if(value == -1) return ;
+		if (value == -1) return ;
 		
 		int x = v.getLeft();
 		int y = v.getTop();
@@ -162,47 +165,47 @@ public class RelativeLayout extends ViewGroup {
 			break;
 		case RelativeLayout.BELOW:
 			relatedView = getRelatedView(value);
-			if(relatedView == null) return ;
+			if (relatedView == null) return ;
 			y = relatedView.getBottom() + relatedView.getLayoutParams().bottomMargin + params.topMargin;
 			break;
 		case RelativeLayout.ABOVE:
 			relatedView = getRelatedView(value);
-			if(relatedView == null) return ;
+			if (relatedView == null) return ;
 			y = relatedView.getTop() - relatedView.getLayoutParams().topMargin - v.getHeight() - params.bottomMargin;
 			break;
 		case RelativeLayout.LEFT_OF:
 			relatedView = getRelatedView(value);
-			if(relatedView == null) return ;
+			if (relatedView == null) return ;
 			x = relatedView.getLeft() - relatedView.getLayoutParams().leftMargin - v.getWidth() - params.rightMargin;
 			break;
 		case RelativeLayout.RIGHT_OF:
 			relatedView = getRelatedView(value);
-			if(relatedView == null) return ;
+			if (relatedView == null) return ;
 			x = relatedView.getRight() + relatedView.getLayoutParams().rightMargin + params.leftMargin;
 			break;
 		case RelativeLayout.ALIGN_BASELINE:
 			relatedView = getRelatedView(value);
-			if(relatedView == null) return ;
+			if (relatedView == null) return ;
 			y = relatedView.getTop();
 			break;
 		case RelativeLayout.ALIGN_BOTTOM:
 			relatedView = getRelatedView(value);
-			if(relatedView == null) return ;
+			if (relatedView == null) return ;
 			y = relatedView.getBottom() - v.getHeight();
 			break;
 		case RelativeLayout.ALIGN_TOP:
 			relatedView = getRelatedView(value);
-			if(relatedView == null) return ;
+			if (relatedView == null) return ;
 			y = relatedView.getTop();
 			break;
 		case RelativeLayout.ALIGN_LEFT:
 			relatedView = getRelatedView(value);
-			if(relatedView == null) return ;
+			if (relatedView == null) return ;
 			x = relatedView.getLeft();
 			break;
 		case RelativeLayout.ALIGN_RIGHT:
 			relatedView = getRelatedView(value);
-			if(relatedView == null) return ;
+			if (relatedView == null) return ;
 			x = relatedView.getRight() - v.getWidth();
 			break;
 		case RelativeLayout.ALIGN_PARENT_BOTTOM:
@@ -243,44 +246,47 @@ public class RelativeLayout extends ViewGroup {
 	
 	private void checkViewSize(int x, int y, View v, ViewGroup.LayoutParams params) {
 		int width = v.getWidth(), height = v.getHeight();
-		if(x + v.getWidth() > getDrawingWidth() + getDrawingLeft()) {
+		if (x + v.getWidth() > getDrawingWidth() + getDrawingLeft()) {
 			width = getDrawingWidth() - x - v.getLayoutParams().rightMargin;
-			if(width < 0) {
+			if (width < 0) {
 				width = getDrawingWidth() - x;
-				if(width < 0) width = getDrawingWidth();
+				if (width < 0) width = getDrawingWidth();
 			}
 		}
-		if(y + v.getHeight() > getDrawingHeight() + getDrawingTop()) {
+		if (y + v.getHeight() > getDrawingHeight() + getDrawingTop()) {
 			height = getDrawingHeight() - y - v.getLayoutParams().bottomMargin;
-			if(height < 0) {
+			if (height < 0) {
 				height = getDrawingHeight() - y;
-				if(height < 0) height = getDrawingHeight();
+				if (height < 0) height = getDrawingHeight();
 			}
 		}
-		//
-		if(width != v.getWidth() || height != v.getHeight()) {
+		
+		if (width != v.getWidth() || height != v.getHeight()) {
 			v.onMeasure(width, height);
 			v.onPostMeasure(width, height);
 			int[] wh = measureChildSize(v);
-			width = wh[0] + v.getLayoutParams().leftMargin;//convertView.getWidth();
-			height = wh[1] + v.getLayoutParams().topMargin;//convertView.getHeight();
+			width = wh[0] + v.getLayoutParams().leftMargin;
+			height = wh[1] + v.getLayoutParams().topMargin;
 		} 
-		//
-		if(params.width < 0 && x < getDrawingLeft()) { // getParent() != null && 
+		
+		if (params.width < 0 && x < getDrawingLeft()) { 
 			width += x;
 			x = getDrawingLeft();
 		}
-		if(params.height < 0 && y < getDrawingTop()) {
+		if (params.height < 0 && y < getDrawingTop()) {
 			height += y;
 			y = getDrawingTop();
 		}
-		v.onLayout(true, x, y, x + width, y + height);//x + v.getWidth(), y + v.getHeight());
+		
+		v.onLayout(true, x, y, x + width, y + height);
 		v.arrange();
 	}
 	
 	private View getRelatedView(int viewId) {
 		View view = findViewById(viewId);
-		if(view == null || view.getVisibility() == View.GONE) return null;
+		if (view == null || view.getVisibility() == View.GONE) {
+			return null;
+		}
 		checkPositioned(view);
 		return view;
 	}
@@ -359,9 +365,9 @@ public class RelativeLayout extends ViewGroup {
 		
 		public LayoutParams(Context c, AttributeSet attrs) {
 			super(c, attrs);
-			
-			Attribute[] attrArray = attrs.obtainRelatedAttr("RelativeLayout", thahn.java.agui.R.attr.RelativeLayout, ViewName.WIDGET_RELATIVE_LAYOUT_CODE);
-			for(Attribute a : attrArray) {
+			// layout name : "RelativeLayout"
+			Attribute[] attrArray = attrs.obtainRelatedAttr(RelativeLayout.class.getSimpleName(), thahn.java.agui.R.attr.RelativeLayout, ViewName.WIDGET_RELATIVE_LAYOUT_CODE);
+			for (Attribute a : attrArray) {
 				int attrNameHash = a.getAttrNameHash();
 				switch(attrNameHash) {
 				case thahn.java.agui.R.attr.RelativeLayout_layout_above:
@@ -423,7 +429,7 @@ public class RelativeLayout extends ViewGroup {
 
 		public LayoutParams(ViewGroup.LayoutParams source) {
 			super(source);
-			if(source instanceof RelativeLayout.LayoutParams) {
+			if (source instanceof RelativeLayout.LayoutParams) {
 				this.rules = ((RelativeLayout.LayoutParams) source).rules;
 			}
 		}

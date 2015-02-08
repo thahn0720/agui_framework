@@ -169,7 +169,7 @@ public class LayoutParser {
 			if (paramsNeeded) generateLayoutParams(context, mParentName.peek(), view, attrSet);
 			((ViewGroup)mParentStack.peek()).addViewInternal(view);
 		} else {
-			if (paramsNeeded) generateLayoutParams(context, "View", view, attrSet);
+			if (paramsNeeded) generateLayoutParams(context, View.class.getSimpleName(), view, attrSet);
 			mParentStack.add(view);
 		}
 		mParentStack.push(view);
@@ -193,13 +193,13 @@ public class LayoutParser {
 			Class<?> cls = null;
 			if (whichLayout.contains(".")) {
 				try {
-					cls = MyUtils.getClass(Global.corePath, whichLayout+"$LayoutParams");//MyUtils.getProjectClass(name);
+					cls = MyUtils.getClass(Global.corePath, whichLayout+"$"+LayoutParams.class.getSimpleName()); // "$LayoutParams"
 				} catch(Exception e) {
-					cls = MyUtils.getClass(Global.projectPath, whichLayout+"$LayoutParams");
+					cls = MyUtils.getClass(Global.projectPath, whichLayout+"$"+LayoutParams.class.getSimpleName()); // "$LayoutParams"
 				}
 			} else {
-				cls = Class.forName(new StringBuilder(Global.corePackageName).append(".widget.").append(whichLayout).append("$LayoutParams")
-										.toString());
+				cls = Class.forName(new StringBuilder(Global.corePackageName).append(".widget.").append(whichLayout)
+						.append("$").append(LayoutParams.class.getSimpleName()).toString());
 			}
 			params = (ViewGroup.LayoutParams) cls.getConstructor(Context.class, AttributeSet.class).newInstance(context, attrSet);
 		} catch (ClassNotFoundException e) {

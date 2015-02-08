@@ -50,12 +50,12 @@ public class ProgressBar extends View implements ActionListener {
 	public void initFromAttributes(AttributeSet attrs, int defaultType) {
 		super.initFromAttributes(attrs, defaultType);
 		
-		Drawable drawable = attrs.getDrawable(thahn.java.agui.internal.Styleable.ProgressBar.indeterminateDrawable, defaultType);
+		Drawable drawable = attrs.getDrawable(thahn.java.agui.R.attr.ProgressBar_indeterminateDrawable, defaultType);
         if (drawable != null) {
             setIndeterminateDrawable(drawable);
         }
         
-        isBgFade = attrs.getBoolean(thahn.java.agui.internal.Styleable.ProgressBar.isBackgroundFaded, false);
+        isBgFade = attrs.getBoolean(thahn.java.agui.R.attr.ProgressBar_isBackgroundFaded, false);
 	}
 
 	@Override

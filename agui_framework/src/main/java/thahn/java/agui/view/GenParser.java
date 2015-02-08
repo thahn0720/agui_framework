@@ -7,7 +7,11 @@ import thahn.java.agui.res.RBase;
 import thahn.java.agui.utils.Log;
 import thahn.java.agui.utils.MyUtils;
 
-
+/**
+ * 
+ * @author thAhn
+ *
+ */
 public class GenParser {
 	
 	public static final	String												GEN_ID 				= "id";
@@ -22,7 +26,7 @@ public class GenParser {
 
 	private static GenParser 												sGen; 
 	public static GenParser getInstance() {
-		if(sGen == null) {
+		if (sGen == null) {
 			sGen = new GenParser();
 		}
 		return sGen;
@@ -71,7 +75,7 @@ public class GenParser {
 		int[][] ret = null;
 		try {
 			Class<?> cls = null;
-			if(packageName.equals(Global.corePackageName)) cls = Class.forName(packageName+".R$"+GenParser.GEN_STYLE);
+			if (packageName.equals(Global.corePackageName)) cls = Class.forName(packageName+".R$"+GenParser.GEN_STYLE);
 			else cls = MyUtils.getProjectClass("R$"+GenParser.GEN_STYLE);
 			
 			Field f = cls.getField(id);
@@ -92,16 +96,16 @@ public class GenParser {
 	
 	public int find(String id, String packageName, String type) {
 		try {
-			Class[] clses = null;
-			if(packageName.equals(Global.corePackageName)) {
+			Class<?>[] clses = null;
+			if (packageName.equals(Global.corePackageName)) {
 				clses = Class.forName(packageName+".R").getClasses();
-			} else if(packageName.equals(Global.projectPackageName)) {
-				Class temp = MyUtils.getProjectClass("R");
-				if(temp != null) clses = temp.getClasses();
+			} else if (packageName.equals(Global.projectPackageName)) {
+				Class<?> temp = MyUtils.getProjectClass("R");
+				if (temp != null) clses = temp.getClasses();
 			}
-			if(clses != null) {
-				for(Class cls : clses) {
-					if(cls.getSimpleName().equals(type)) {
+			if (clses != null) {
+				for (Class<?> cls : clses) {
+					if (cls.getSimpleName().equals(type)) {
 						try {
 							String[] realId = id.split(RBase.RES_SEPARATOR);
 							Field field = cls.getField(realId.length>1?realId[1]:realId[0]);

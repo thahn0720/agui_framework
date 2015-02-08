@@ -5,6 +5,11 @@ import java.io.File;
 
 import thahn.java.agui.app.ApplicationController;
 
+/**
+ * 
+ * @author thAhn
+ *
+ */
 public class Main {
 	
 	public static void main(String[] arguments) {

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -23,6 +24,8 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
+import com.google.common.collect.Lists;
+
 import thahn.java.agui.AguiConstants;
 import thahn.java.agui.Global;
 import thahn.java.agui.exception.WrongFormatException;
@@ -32,7 +35,11 @@ import thahn.java.agui.utils.Log;
 import thahn.java.agui.utils.MyUtils;
 import thahn.java.agui.utils.Pair;
 
-
+/**
+ * 
+ * @author thAhn
+ *
+ */
 public abstract class RBase {
 	
 	public static final String 												TAG 					= "RBase";
@@ -61,7 +68,8 @@ public abstract class RBase {
 	/*package*/ ResourcesContainer											mResources;
 	/*package*/ String														mPackageName;
 	/*package*/ BufferedOutputStream										mROS;
-	/*package*/ String														mAbsolutePath;
+	/*package*/ String														mAbsoluteResBasePath;
+	/*package*/ String														mAbsoluteGenBasePath;
 	/*package*/ int															mStartIndex;
 	/*package*/ EnumResources 												mEnumRes;
 	/*package*/ boolean														isWritable;
@@ -72,24 +80,26 @@ public abstract class RBase {
 		try {
 			String packageName = mPackageName.replace(".", "/");
 			File dirs = null;
+			
 			if (isJar()) {
 //				jar:file:\E:\Dropbox\Workspace\Java\AGUI\AGUI_SDK\agui_sdk.jar!\thahn\java\agui\R.java 
 				isWritable = false;
 
-				ZipInputStream in = new ZipInputStream(new FileInputStream(mAbsolutePath));
+				ZipInputStream in = new ZipInputStream(new FileInputStream(mAbsoluteResBasePath));
 			    ZipEntry entry = null;
 			    while ((entry = in.getNextEntry()) != null) {
 			    	String path = entry.getName();
 			    	if (!path.endsWith("/") && (path.endsWith(".xml") || path.endsWith(".png") || path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".bmp"))) {
+			    		// FIXME : seperate container variable by folder like mValuesPathList , mMenuPathList and so on.
 			    		mPathList.add("/"+path);
 			    	}
 				}
 			    in.close();
 			} else {
 				isWritable = true;
-				File genDir = new File(mAbsolutePath+"/gen/"+packageName);
+				File genDir = new File(mAbsoluteGenBasePath+"/gen/"+packageName);
 				if (!genDir.exists()) genDir.mkdirs();
-				dirs = new File(mAbsolutePath+"/gen/"+packageName+"/R.java");
+				dirs = new File(mAbsoluteGenBasePath+"/gen/"+packageName+"/R.java");
 			}
 			if (isWritable) {
 				mROS = new BufferedOutputStream(new FileOutputStream(dirs));
@@ -97,7 +107,7 @@ public abstract class RBase {
 			write(makePackage(mPackageName));
 			write(startClass());
 
-			if (mAbsolutePath.equals(Global.corePath)) {
+			if (mAbsoluteGenBasePath.equals(Global.corePath)) {
 				mClassBuildConfig = Class.forName(mPackageName+".BuildConfig");
 			} else {
 				mClassBuildConfig = MyUtils.getProjectClass(mPackageName+".BuildConfig");
@@ -290,7 +300,7 @@ public abstract class RBase {
 	private void parseAnimByDOM() throws Exception {
 		write(makePublicStaticFinalClass("anim"));
 		//
-		final String animPath = mAbsolutePath+"/res/anim/";
+		final String animPath = mAbsoluteResBasePath+"/res/anim/";
 		mCheckFolder.loop(animPath, new OnDiscoverListener() {
 			@Override
 			public void processFile(String path, String pathWithoutEx) throws IOException {
@@ -305,7 +315,7 @@ public abstract class RBase {
 	private void parseMenuByDOM() throws Exception {
 		write(makePublicStaticFinalClass("menu"));
 		
-		final String menuPath = mAbsolutePath+"/res/menu/";
+		final String menuPath = mAbsoluteResBasePath+"/res/menu/";
 		mCheckFolder.loop(menuPath, new OnDiscoverListener() {
 			@Override
 			public void processFile(String path, String pathWithoutEx) throws IOException {
@@ -322,7 +332,7 @@ public abstract class RBase {
 	private void parseDrawableImgByDOM() throws Exception {
 		write(makePublicStaticFinalClass("drawable"));
 		
-		final String layoutPath = mAbsolutePath+"/res/drawable-hdpi/";
+		final String layoutPath = mAbsoluteResBasePath+"/res/drawable-hdpi/";
 		mCheckFolder.loop(layoutPath, new OnDiscoverListener() {
 			@Override
 			public void processFile(String path, String pathWithoutEx) throws IOException {
@@ -341,7 +351,7 @@ public abstract class RBase {
 	
 	@SuppressWarnings("unchecked")
 	private void parseDrawableByDOM() throws Exception {
-		final String layoutPath = mAbsolutePath+"/res/drawable/";
+		final String layoutPath = mAbsoluteResBasePath+"/res/drawable/";
 		mCheckFolder.loop(layoutPath, new OnDiscoverListener() {
 			@Override
 			public void processFile(String path, String pathWithoutEx) throws IOException {
@@ -355,7 +365,7 @@ public abstract class RBase {
 	private void parseLayoutByDOM() throws Exception {
 		write(makePublicStaticFinalClass("layout"));
 		
-		final String layoutPath = mAbsolutePath+"/res/layout/";
+		final String layoutPath = mAbsoluteResBasePath+"/res/layout/";
 		mCheckFolder.loop(layoutPath, new OnDiscoverListener() {
 			@Override
 			public void processFile(String path, String pathWithoutEx) throws IOException {
@@ -370,14 +380,16 @@ public abstract class RBase {
 	
 	private void parseIdByDOM() throws JDOMException, IOException, URISyntaxException, Exception {
 		write(makePublicStaticFinalClass("id"));
+		String[] paths = null;
 		
-		String[] paths = new String[]{ mAbsolutePath+"/res/layout/"
-										,mAbsolutePath+"/res/menu/" 
-										};
+		if (isJar()) {
+			paths = new String[]{ "/res/layout/", "/res/menu/" };
+		} else {
+			paths = new String[]{ mAbsoluteResBasePath + "/res/layout/", mAbsoluteResBasePath + "/res/menu/" };
+		}
 		
 		for (String dirPath : paths) {
-			if (mAbsolutePath.endsWith(AguiConstants.JAR_KEYWORD)) {
-				dirPath = dirPath.substring(mAbsolutePath.length()+1);
+			if (isJar()) {
 			    for (String resName : mPathList) {
 			    	if (!resName.contains(dirPath)) continue;
 			    	InputStream inputStream = mClassBuildConfig.getResourceAsStream(resName);
@@ -450,13 +462,13 @@ public abstract class RBase {
 	
 	private void parseValuesByDOM() throws Exception {
 		
-		String[][] container = new String[][]{{mAbsolutePath+"/res/values/values.xml", "string"}
-										, {mAbsolutePath+"/res/values/dimens.xml", "dimen"}
+		String[][] container = new String[][]{{mAbsoluteResBasePath+"/res/values/values.xml", "string"}
+										, {mAbsoluteResBasePath+"/res/values/dimens.xml", "dimen"}
 										};
 
 		for (String[] names : container) {
-			if (mAbsolutePath.endsWith(AguiConstants.JAR_KEYWORD)) {
-				names[0] = names[0].substring(mAbsolutePath.length()+1);
+			if (isJar()) {
+				names[0] = names[0].substring(mAbsoluteResBasePath.length()+1);
 				write(makePublicStaticFinalClass(names[1]));//"string"));
 			    InputStream in = mClassBuildConfig.getResourceAsStream("/"+names[0]);
 		    	if (in != null) {
@@ -520,7 +532,7 @@ public abstract class RBase {
 	private void parseRawByDOM() throws Exception {
 		write(makePublicStaticFinalClass("raw"));
 		
-		final String layoutPath = mAbsolutePath+"/res/raw/";
+		final String layoutPath = mAbsoluteResBasePath+"/res/raw/";
 		mCheckFolder.loop(layoutPath, new OnDiscoverListener() {
 			@Override
 			public void processFile(String path, String pathWithoutEx) throws IOException {
@@ -576,7 +588,7 @@ public abstract class RBase {
 	}
 	
 	private boolean isJar() {
-		return mAbsolutePath.endsWith(AguiConstants.JAR_KEYWORD);
+		return mAbsoluteResBasePath.endsWith(AguiConstants.JAR_KEYWORD);
 	}
 	
 	private void write(byte[] content) throws IOException {
@@ -632,8 +644,8 @@ public abstract class RBase {
 		
 		public void loop(String input, OnDiscoverListener listener) throws Exception {
 			String folderPath = input;
-			if (mAbsolutePath.endsWith(AguiConstants.JAR_KEYWORD)) {
-				folderPath = input.substring(mAbsolutePath.length());
+			if (isJar()) {
+				folderPath = input.substring(mAbsoluteResBasePath.length());
 			    for (String path : mPathList) {
 			    	if (path.contains(folderPath)) {
 			    		path = path.substring(path.lastIndexOf("/")+1);
@@ -678,18 +690,30 @@ public abstract class RBase {
 	 */
 	@SuppressWarnings("unchecked")
 	private void parseAllValuesByDOM() throws Exception {
-		String valuesPath = mAbsolutePath+"/res/values/";
-		File values = new File(valuesPath);
+		String valuesPath = "/res/values/";
 		InputStream in = null;
-		for (String path : values.list()) {
-			if (mAbsolutePath.endsWith(AguiConstants.JAR_KEYWORD)) {
-				path = path.substring(mAbsolutePath.length()+1);
-			    in = mClassBuildConfig.getResourceAsStream("/"+path);
+		List<String> valuesPathList = null;
+		
+		if (isJar()) {
+			valuesPathList = Lists.newArrayList();
+		    for (String path : mPathList) {
+		    	if (path.contains(valuesPath)) {
+		    		valuesPathList.add(path);
+		    	}
+			}
+		} else {
+			File values = new File(mAbsoluteResBasePath + valuesPath);
+			valuesPathList = Arrays.asList(values.list());
+		}
+		
+		for (String path : valuesPathList) {
+			if (isJar()) {
+			    in = mClassBuildConfig.getResourceAsStream(path);
 			} else {
 				if (!path.endsWith(".xml")) {
 					continue;
 				} else {
-					in = new BufferedInputStream(new FileInputStream(valuesPath+path));
+					in = new BufferedInputStream(new FileInputStream(mAbsoluteResBasePath + valuesPath + path));
 				}
 			}
 			

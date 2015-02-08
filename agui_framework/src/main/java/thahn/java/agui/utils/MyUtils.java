@@ -15,7 +15,11 @@ import thahn.java.agui.AguiConstants;
 import thahn.java.agui.Global;
 import thahn.java.agui.res.ResourcesManager;
 
-
+/**
+ * 
+ * @author thAhn
+ *
+ */
 public class MyUtils {
 	
 	public static String[] newStringArray(Object... values) {

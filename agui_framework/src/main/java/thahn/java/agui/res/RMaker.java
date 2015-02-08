@@ -41,11 +41,13 @@ public class RMaker extends RBase {
 			res = new Resources();
 		}
 		if(pName.equals(Global.corePackageName)) {
-			mAbsolutePath = Global.corePath;
+			mAbsoluteResBasePath = Global.coreResBasePath;
+			mAbsoluteGenBasePath = Global.corePath;
 			mResources = res.getResources(Resources.AGUI_RESOURCE);
 			mStartIndex = 0;
 		} else {
-			mAbsolutePath = Global.projectPath;
+			mAbsoluteResBasePath = Global.projectResBasePath;
+			mAbsoluteGenBasePath = Global.projectPath;
 			mResources = res.getResources(Resources.PROJECT_RESOURCE);
 			mStartIndex = PROJECT_R_START_INDEX;
 		}

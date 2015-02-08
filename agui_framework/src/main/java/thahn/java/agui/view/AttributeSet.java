@@ -18,6 +18,11 @@ import thahn.java.agui.utils.AguiUtils;
 import thahn.java.agui.utils.MyUtils;
 import thahn.java.agui.widget.ViewName;
 
+/**
+ * 
+ * @author thAhn
+ *
+ */
 public class AttributeSet {
 
 	private Context 													mContext;

@@ -4,6 +4,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<properties>
 		<java_version>1.7</java_version>
+    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    	<release.version>0.0.1-SNAPSHOT</release.version>
 	</properties>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>thahn.java.agui</groupId>

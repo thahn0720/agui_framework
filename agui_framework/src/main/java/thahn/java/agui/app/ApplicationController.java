@@ -19,7 +19,11 @@ import thahn.java.agui.utils.AguiUtils;
 import thahn.java.agui.utils.Log;
 import thahn.java.agui.utils.MyUtils;
 
-
+/**
+ * 
+ * @author thAhn
+ *
+ */
 public class ApplicationController extends ContextThemeWrapper implements Window.Callback {
 	
 	private static final long serialVersionUID = -9172835460659506867L;
@@ -70,29 +74,35 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 		Global.init();
 				
 		Global.corePath = MyUtils.getClassPath(thahn.java.agui.Main.class);
+		Global.coreResBasePath = Global.corePath;
 		String[] ends = new String[]{"/bin/", "/target/classes/"};
 		for (String end : ends) {
 			if (Global.corePath.endsWith(end)) {
 				Global.corePath = Global.corePath.substring(0, Global.corePath.length() - end.length());
+				
+				if ("/bin/".equals(end)) {
+					Global.coreResBasePath = Global.corePath; 
+				} else if ("/target/classes/".equals(end)) {
+					Global.coreResBasePath = Global.corePath + "/src/main/resources";
+				}
 			}
 		}
 		Global.projectPath = projectPath;//"E:/Workspace/Java/AGUI_ApiDemo";
+		Global.projectResBasePath = Global.projectPath;
 		Global.corePackageName = Main.class.getPackage().getName();
 		Global.projectPackageName = projectPackageName;//manifestInfo.packageName;//"dksxogudsla.java.agui.test";
-		//		
+		// core res path		
 		Global.coreDrawableImgPath = Global.corePath+"/res/drawable-hdpi/";
 		Global.coreDrawablePath = Global.corePath+"/res/drawable/";
 		Global.coreLayoutPath = Global.corePath+"/res/layout/"; 
 		Global.coreValuesPath = Global.corePath+"/res/values/";
 		Global.coreGenPath = Global.corePath+"/gen/layout/";
-		//		
+		// project res path		
 		Global.projectDrawableImgPath = Global.projectPath+"/res/drawable-hdpi/";
 		Global.projectDrawablePath = Global.projectPath+"/res/drawable/";
 		Global.projectLayoutPath = Global.projectPath+"/res/layout/"; 
 		Global.projectValuesPath = Global.projectPath+"/res/values/";
 		Global.projectGenPath = Global.projectPath+"/gen/layout/";
-		Log.i("core path : " + Global.corePath);
-		Log.i("project path : " + Global.projectPath);
 		
 		Global.aguiProjectPath = Global.aguiHomePath + "/" + Global.projectPackageName + "/";
 		File projectFolder = new File(Global.aguiProjectPath);
