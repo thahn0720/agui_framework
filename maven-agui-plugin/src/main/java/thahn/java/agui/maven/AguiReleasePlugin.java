@@ -110,7 +110,7 @@ public class AguiReleasePlugin extends AbstractMojo {
 	 * @todo Add license files in META-INF directory.
 	 */
 	public void execute() throws MojoExecutionException {
-		log("Start releasing agui framework");
+		log("Started releasing agui framework");
 		// prepare
 		File releaseTempDir = Paths.get(outputDirectory.getAbsolutePath(), "agui-release-temp").toFile();
 		if (!releaseTempDir.exists() && releaseTempDir.mkdirs()) {
@@ -122,13 +122,16 @@ public class AguiReleasePlugin extends AbstractMojo {
 		aguiSdkLayoutHelper = new AguiSdkLayoutHelper(releaseTempDir.getAbsolutePath(), classifier, moduleJars);
 		Result ret = aguiSdkLayoutHelper.makeLayout();
 		if (ret.ret) {
-			Result ret2 = aguiSdkLayoutHelper.compressToJar(Paths.get(releaseTempDir.getAbsolutePath(), "agui-sdk-windows-" + classifier).toFile().getAbsolutePath());
+			Result ret2 = aguiSdkLayoutHelper.compressToJar(aguiSdkLayoutHelper.getBaseSdkPath().getAbsolutePath()
+					, Paths.get(outputDirectory.getAbsolutePath()
+							, aguiSdkLayoutHelper.getBaseSdkPath().getName() + ".zip").toFile().getAbsolutePath());
 			if (!ret2.ret) {
 				error("can not compress agui sdk layout : " + ret.reason);
 			}
 		} else {
 			error("can not make agui sdk layout : " + ret.reason);
 		}
+		log("Finished releasing agui framework");
 	}
 	
 	private List<File> getModuleJar(File moveToThis) throws MojoExecutionException {

@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,6 +30,8 @@ public class AguiSdkLayoutHelper {
 	private final String 										version;
 	private final List<File>									moduleJarFiles;
 	private final File	 										baseSdkPath;
+	private File	 											aguiLibDir;
+	private ZipHelper											zipHelper		= new ZipHelper();
 	
 	public AguiSdkLayoutHelper(String relativePath, String version, List<File> moduleJarFiles) {
 		this.relativePath = relativePath;
@@ -52,7 +55,8 @@ public class AguiSdkLayoutHelper {
 			File platformsPath = Paths.get(baseSdkPath.getAbsolutePath(), "platforms").toFile();
 			makeDirectory(platformsPath);
 			Path aguiLibPath = Paths.get(platformsPath.getAbsolutePath(), "agui-" + version);
-			makeDirectory(aguiLibPath.toFile());
+			aguiLibDir = aguiLibPath.toFile();
+			makeDirectory(aguiLibDir);
 			// platforms/lib : move modules jar to lib 
 			for (File moduleJar : moduleJarFiles) {
 				Path aguiLibFile = Paths.get(aguiLibPath.toFile().getAbsolutePath(), moduleJar.getName());
@@ -89,42 +93,23 @@ public class AguiSdkLayoutHelper {
 	 * @param outputPath directory
 	 * @return
 	 */
-	public Result compressToJar(String outputPath) {
+	public Result compressToJar(String compressionTarget, String outputPath) {
 		Result ret = new Result();
+		ret.ret = true;
 		try {
-			ret.ret = true;
-			int buffer = 2048;
-			CheckedOutputStream checksum = new CheckedOutputStream(new FileOutputStream(outputPath)
-											, new Adler32());
-			ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(checksum));
-			// out.setMethod(ZipOutputStream.DEFLATED);
-			byte data[] = new byte[buffer];
-			// get a list of files from current directory
-			BufferedInputStream origin = null;
-			File sourceFile = baseSdkPath;
-			String files[] = sourceFile.list();
-			for (int i = 0; i < files.length; i++) {
-				FileInputStream fi = new FileInputStream(files[i]);
-				origin = new BufferedInputStream(fi, buffer);
-				ZipEntry entry = new ZipEntry(files[i]);
-				out.putNextEntry(entry);
-				int count;
-				while ((count = origin.read(data, 0, buffer)) != -1) {
-					out.write(data, 0, count);
-				}
-				origin.close();
-			}
-			out.close();
-		} catch (Exception e) {
+			zipHelper.compressZipDir(compressionTarget, outputPath);
+		} catch (IOException e) {
 			e.printStackTrace();
 			ret.ret = false;
-			ret.e = e;
 			ret.reason = e.getMessage();
 		}
-		
 		return ret;
 	}
 	
+	public File getBaseSdkPath() {
+		return baseSdkPath;
+	}
+
 	public class Result {
 		
 		/*package*/ boolean ret;
