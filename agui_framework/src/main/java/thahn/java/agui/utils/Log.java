@@ -73,4 +73,9 @@ public class Log {
 		e(msg);
 		throw new RuntimeException(msg);
 	}
+	
+	public static void t(String tag, String msg) {
+		e(tag, msg);
+		throw new RuntimeException(msg);
+	}
 }

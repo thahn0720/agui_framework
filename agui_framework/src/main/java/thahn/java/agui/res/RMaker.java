@@ -35,22 +35,36 @@ public class RMaker extends RBase {
 	
 	public static final int													PROJECT_R_START_INDEX 		= INDEX_GAP * 20; 
 	
-	public RMaker(Resources res, String pName) {
-		mPackageName = pName;
+	public RMaker(boolean isCore, String corePackageName, String corePath, String genBasePath
+			, String resBasePath, Resources res, String packageName) {
+		mCorePackageName = corePackageName;
+		mCorePath = corePath;
+		mPackageName = packageName;
+		mAbsoluteResBasePath = resBasePath;
+		mAbsoluteGenBasePath = genBasePath;
+		
 		if(res == null) {
 			res = new Resources();
 		}
-		if(pName.equals(Global.corePackageName)) {
-			mAbsoluteResBasePath = Global.coreResBasePath;
-			mAbsoluteGenBasePath = Global.corePath;
+		
+		if (isCore) {
 			mResources = res.getResources(Resources.AGUI_RESOURCE);
 			mStartIndex = 0;
 		} else {
-			mAbsoluteResBasePath = Global.projectResBasePath;
-			mAbsoluteGenBasePath = Global.projectPath;
 			mResources = res.getResources(Resources.PROJECT_RESOURCE);
 			mStartIndex = PROJECT_R_START_INDEX;
 		}
+//		if(packageName.equals(Global.corePackageName)) {
+//			mAbsoluteResBasePath = Global.coreResBasePath;
+//			mAbsoluteGenBasePath = Global.corePath;
+//			mResources = res.getResources(Resources.AGUI_RESOURCE);
+//			mStartIndex = 0;
+//		} else {
+//			mAbsoluteResBasePath = Global.projectResBasePath;
+//			mAbsoluteGenBasePath = Global.projectPath;
+//			mResources = res.getResources(Resources.PROJECT_RESOURCE);
+//			mStartIndex = PROJECT_R_START_INDEX;
+//		}
 		mEnumRes = ResourcesManager.getInstance().getEnumResources();
 	}
 }

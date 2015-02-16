@@ -33,7 +33,11 @@ import thahn.java.agui.utils.Log;
 import thahn.java.agui.utils.MyUtils;
 import thahn.java.agui.utils.ReflectionUtils;
 
-
+/**
+ * 
+ * @author thAhn
+ *
+ */
 public class ManifestParser {
 //	<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 //		    package="wifi.smartphone.lge"
@@ -73,7 +77,7 @@ public class ManifestParser {
 	private ManifestInfo											mManifestInfo;
 	
 	public ManifestParser(Resources res) {
-		if(res == null) res = new Resources();
+		if (res == null) res = new Resources();
 		mResources = res;
 		mManifestInfo = new ManifestInfo();
 	}
@@ -86,14 +90,13 @@ public class ManifestParser {
 			SAXBuilder builder = new SAXBuilder();
 			Document doc = builder.build(bi);
 			Element root = doc.getRootElement();
-			if(!"manifest".equals(root.getName())) logWrongFormat();
+			if (!"manifest".equals(root.getName())) logWrongFormat();
 			Global.projectPackageName = mManifestInfo.packageName = root.getAttributeValue("package");
-//			
+			
 			parseApplication(root.getChild("application"));
-//			
+			
 			bi.close();
 			in.close();
-//			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -116,13 +119,13 @@ public class ManifestParser {
 		appInfo.height = mManifestInfo.height;
 		ApplicationSetting.applicationInfo = appInfo;
 		//
-		for(Element child : (List<Element>) element.getChildren()) {
+		for (Element child : (List<Element>) element.getChildren()) {
 			String childName = child.getName();
-			if("activity".equals(childName)) {
+			if ("activity".equals(childName)) {
 				parseActivity(child);
-			} else if("service".equals(childName)) {
+			} else if ("service".equals(childName)) {
 				parseService(child);
-			} else if("receiver".equals(childName)) {
+			} else if ("receiver".equals(childName)) {
 				parseReceiver(child);
 			} else {
 				logWrongFormat();
@@ -136,32 +139,32 @@ public class ManifestParser {
 		info.width = mManifestInfo.width;
 		info.height = mManifestInfo.height;
 		
-		for(Attribute attr : (List<Attribute>)child.getAttributes()) {
+		for (Attribute attr : (List<Attribute>)child.getAttributes()) {
 			Object attrValue = attr.getValue();
-			if(attrValue != null) {
+			if (attrValue != null) {
 				String attrName = attr.getName();
-				if(((String)attrValue).startsWith("@")) {
+				if (((String)attrValue).startsWith("@")) {
 					String[] values = ((String)attrValue).substring(1).split("/");
 					String packageName = AguiUtils.getPackageNameByNS((String)attrValue); // ((String)attrValue).contains(prefix)
 					
-					if(attrName.equals("theme")) {
+					if (attrName.equals("theme")) {
 //						values[1] = values[1].replace(".", "_");
 //						attrValue = mResources.getIdentifier(values[1], values[0], packageName);
-					} else if(attrName.equals("label")) {
+					} else if (attrName.equals("label")) {
 						int id = mResources.getIdentifier(values[1], values[0], packageName);
 						attrValue = mResources.getString(id);
-					} else if(attrName.equals("icon")) {
+					} else if (attrName.equals("icon")) {
 						attrValue = mResources.getIdentifier(values[1], values[0], packageName);
 					}
 				} else {
-					if(attrName.equals("name")) {
+					if (attrName.equals("name")) {
 						attrValue = MyUtils.makeFullPackageName(((String)attrValue));
-					} else if(attrName.equals("label")) {
-					} else if(attrName.equals("width")) {
+					} else if (attrName.equals("label")) {
+					} else if (attrName.equals("width")) {
 						Object width = getAttributeValue(child, "width");
 						info.width = Integer.parseInt((String)width);
 						continue;
-					} else if(attrName.equals("height")) {
+					} else if (attrName.equals("height")) {
 						Object height = getAttributeValue(child, "height");
 						info.height = Integer.parseInt((String)height);
 						continue;
@@ -179,23 +182,23 @@ public class ManifestParser {
 	private void parseService(Element child) {
 		try {
 			ServiceInfo info = new ServiceInfo();
-			for(Attribute attr : (List<Attribute>)child.getAttributes()) {
+			for (Attribute attr : (List<Attribute>)child.getAttributes()) {
 				String attrValue = attr.getValue();
-				if(attrValue != null) {
+				if (attrValue != null) {
 					String attrName = attr.getName();
-					if(attrValue.startsWith("@")) {
+					if (attrValue.startsWith("@")) {
 						// FIXME : remove 'continue;' and implement details
 						continue ;
 //						String[] values = attrValue.substring(1).split("/");
 //						String packageName = Global.AGUI_NAMESPACE.equals(attr.getNamespacePrefix())?Global.corePackageName:Global.projectPackageName;
-//						if(attrName.equals("label")) {
+//						if (attrName.equals("label")) {
 //							int id = mResources.getIdentifier(values[1], values[0], packageName);
 //							attrValue = mResources.getString(id);
 //						} 
 					} else {
 //						String packageName = Global.projectPackageName;
 //						StringBuilder builder = new StringBuilder();
-						if(attrName.equals("name")) {
+						if (attrName.equals("name")) {
 							attrValue = MyUtils.makeFullPackageName(attrValue);
 						}
 					}
@@ -241,18 +244,18 @@ public class ManifestParser {
 //	  <data >
 //  </intent-filter>
 	private void parseIntent(Element element, int which, String contextName, Object tag) {
-		for(Element a : (List<Element>) element.getChildren()) {
-			if("intent-filter".equals(a.getName())) {
+		for (Element a : (List<Element>) element.getChildren()) {
+			if ("intent-filter".equals(a.getName())) {
 				IntentFilter intentFilter = new IntentFilter();
-				for(Element b : (List<Element>) a.getChildren()) {
+				for (Element b : (List<Element>) a.getChildren()) {
 					String name = b.getName();
 					String value = getAttributeValue(b, "name");
-					if("action".equals(name)) {
+					if ("action".equals(name)) {
 						intentFilter.addAction(value);
-						if(Intent.ACTION_MAIN.equals(value)) mManifestInfo.mainActivity = contextName; 
-					} else if("category".equals(name)) {
+						if (Intent.ACTION_MAIN.equals(value)) mManifestInfo.mainActivity = contextName; 
+					} else if ("category".equals(name)) {
 						intentFilter.addCategory(value);
-					} else if("data".equals(name)) {
+					} else if ("data".equals(name)) {
 						
 					}
 				}
@@ -268,8 +271,8 @@ public class ManifestParser {
 	
 	@SuppressWarnings("unchecked")
 	private String getAttributeValue(Element e, String name) {
-		for(Attribute a : (List<Attribute>)e.getAttributes()) {
-			if(a.getName().equals(name)) {
+		for (Attribute a : (List<Attribute>)e.getAttributes()) {
+			if (a.getName().equals(name)) {
 				return a.getValue();
 			}
 		}
@@ -278,9 +281,9 @@ public class ManifestParser {
 	
 //	private String makeFullPackageName(String attrValue) {
 //		StringBuilder builder = new StringBuilder();
-//		if(attrValue.startsWith(".")) { // .activity
+//		if (attrValue.startsWith(".")) { // .activity
 //			builder.append(Global.projectPackageName).append(attrValue);
-//		} else if(!attrValue.startsWith(Global.projectPackageName)) { // activity
+//		} else if (!attrValue.startsWith(Global.projectPackageName)) { // activity
 //			builder.append(Global.projectPackageName).append(".").append(attrValue);
 //		} 
 //		return builder.toString();

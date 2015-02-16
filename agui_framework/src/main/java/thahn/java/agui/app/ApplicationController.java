@@ -89,20 +89,20 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 		}
 		Global.projectPath = projectPath;//"E:/Workspace/Java/AGUI_ApiDemo";
 		Global.projectResBasePath = Global.projectPath;
-		Global.corePackageName = Main.class.getPackage().getName();
+		Global.corePackageName = thahn.java.agui.Main.class.getPackage().getName();
 		Global.projectPackageName = projectPackageName;//manifestInfo.packageName;//"dksxogudsla.java.agui.test";
 		// core res path		
 		Global.coreDrawableImgPath = Global.corePath+"/res/drawable-hdpi/";
 		Global.coreDrawablePath = Global.corePath+"/res/drawable/";
 		Global.coreLayoutPath = Global.corePath+"/res/layout/"; 
 		Global.coreValuesPath = Global.corePath+"/res/values/";
-		Global.coreGenPath = Global.corePath+"/gen/layout/";
+		Global.coreGenBasePath = Global.corePath;
 		// project res path		
 		Global.projectDrawableImgPath = Global.projectPath+"/res/drawable-hdpi/";
 		Global.projectDrawablePath = Global.projectPath+"/res/drawable/";
 		Global.projectLayoutPath = Global.projectPath+"/res/layout/"; 
 		Global.projectValuesPath = Global.projectPath+"/res/values/";
-		Global.projectGenPath = Global.projectPath+"/gen/layout/";
+		Global.projectGenBasePath = Global.projectPath;
 		
 		Global.aguiProjectPath = Global.aguiHomePath + "/" + Global.projectPackageName + "/";
 		File projectFolder = new File(Global.aguiProjectPath);
@@ -118,9 +118,11 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 		 
 		LooperManager.start();
 		// make R  
-		RMaker coreRMaker = new RMaker(ResourcesManager.getInstance(), Global.corePackageName);
+		RMaker coreRMaker = new RMaker(true, Global.corePackageName, Global.corePath, Global.coreGenBasePath
+				, Global.coreResBasePath, ResourcesManager.getInstance(), Global.corePackageName);
 		coreRMaker.parse();
-		RMaker projectRMaker = new RMaker(ResourcesManager.getInstance(), Global.projectPackageName);
+		RMaker projectRMaker = new RMaker(false, Global.corePackageName, Global.corePath, Global.projectGenBasePath
+				, Global.projectResBasePath, ResourcesManager.getInstance(), Global.projectPackageName);
 		projectRMaker.parse();
 		RMaker.recycle();
 		// parse from androidManifest.xml 

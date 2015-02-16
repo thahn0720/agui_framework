@@ -9,7 +9,9 @@ package thahn.java.agui.res;
  */
 public class RBuilder extends RBase {
 	
-	public RBuilder(String packageName, String projectPath) {
+	public RBuilder(String corePackageName, String corePath, String packageName, String projectPath) {
+		mCorePackageName = corePackageName;
+		mCorePath = corePath;
 		mPackageName = packageName;
 		mAbsoluteResBasePath = projectPath;
 		mAbsoluteGenBasePath = projectPath;

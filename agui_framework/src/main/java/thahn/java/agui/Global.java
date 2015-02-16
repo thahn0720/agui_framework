@@ -33,13 +33,13 @@ public class Global {
 	public static String											coreDrawableImgPath;
 	public static String											coreDrawablePath;
 	public static String											coreLayoutPath;
-	public static String											coreGenPath;
+	public static String											coreGenBasePath;
 	public static String											coreValuesPath;
 	public static String											projectResBasePath;
 	public static String											projectDrawableImgPath;
 	public static String											projectDrawablePath;
 	public static String											projectLayoutPath;
-	public static String											projectGenPath;
+	public static String											projectGenBasePath;
 	public static String											projectValuesPath;
 
 	public static void init() {

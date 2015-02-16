@@ -9,6 +9,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,16 +29,15 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
-import com.google.common.collect.Lists;
-
 import thahn.java.agui.AguiConstants;
-import thahn.java.agui.Global;
 import thahn.java.agui.exception.WrongFormatException;
 import thahn.java.agui.graphics.Color;
 import thahn.java.agui.utils.DimensionUtils;
 import thahn.java.agui.utils.Log;
 import thahn.java.agui.utils.MyUtils;
 import thahn.java.agui.utils.Pair;
+
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -67,6 +71,8 @@ public abstract class RBase {
 	
 	/*package*/ ResourcesContainer											mResources;
 	/*package*/ String														mPackageName;
+	/*package*/ String														mCorePackageName;
+	/*package*/ String														mCorePath;
 	/*package*/ BufferedOutputStream										mROS;
 	/*package*/ String														mAbsoluteResBasePath;
 	/*package*/ String														mAbsoluteGenBasePath;
@@ -81,20 +87,50 @@ public abstract class RBase {
 			String packageName = mPackageName.replace(".", "/");
 			File dirs = null;
 			
+			if (mAbsoluteGenBasePath.equals(mCorePath)) {
+				mClassBuildConfig = Class.forName(mPackageName+".BuildConfig");
+			} else {
+				mClassBuildConfig = MyUtils.getProjectClass(mPackageName+".BuildConfig");
+			}
+			
 			if (isJar()) {
-//				jar:file:\E:\Dropbox\Workspace\Java\AGUI\AGUI_SDK\agui_sdk.jar!\thahn\java\agui\R.java 
+				// jar:file:\E:\Dropbox\Workspace\Java\AGUI\AGUI_SDK\agui_sdk.jar!\thahn\java\agui\R.java 
 				isWritable = false;
 
-				ZipInputStream in = new ZipInputStream(new FileInputStream(mAbsoluteResBasePath));
+				ZipInputStream in = new ZipInputStream(new BufferedInputStream(new FileInputStream(mAbsoluteResBasePath)));
 			    ZipEntry entry = null;
+			    String absolutePathParent = new File(mAbsoluteResBasePath).getParent();
+			    File newResDir = Paths.get(absolutePathParent, AguiConstants.RES_DIR_NAME).toFile();
+			    String newResDirPath = newResDir.getAbsolutePath();
+			    boolean neededExtract = !newResDir.exists();
+			    if (neededExtract && !newResDir.mkdirs()) {
+			    	Log.t(TAG, "can not make new Res Directory : " + newResDirPath);
+			    }
 			    while ((entry = in.getNextEntry()) != null) {
-			    	String path = entry.getName();
-			    	if (!path.endsWith("/") && (path.endsWith(".xml") || path.endsWith(".png") || path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".bmp"))) {
-			    		// FIXME : seperate container variable by folder like mValuesPathList , mMenuPathList and so on.
-			    		mPathList.add("/"+path);
+			    	String zipEntryPath = entry.getName();
+			    	if (zipEntryPath.startsWith(AguiConstants.RES_DIR_NAME + AguiConstants.DIR_SEPERATOR)) {
+			    		zipEntryPath = "/" + zipEntryPath;
+			    		if (!zipEntryPath.endsWith("/") && (zipEntryPath.endsWith(".xml") || zipEntryPath.endsWith(".png") || zipEntryPath.endsWith(".jpg") || zipEntryPath.endsWith(".jpeg") || zipEntryPath.endsWith(".bmp"))) {
+			    			// FIXME : seperate container variable by folder like mValuesPathList , mMenuPathList and so on.
+			    			mPathList.add(zipEntryPath);
+			    		}
+			    		
+			    		if (neededExtract) {
+		    				File resFile = Paths.get(absolutePathParent, zipEntryPath).toFile();
+		    				if (entry.isDirectory()) {
+		    					if (!resFile.exists() && !resFile.mkdir()) {
+		    						Log.t(TAG, "can not make new Res Directory : " + resFile.getAbsolutePath());
+		    					} 
+		    				} else {
+		    					Files.copy(mClassBuildConfig.getResourceAsStream(zipEntryPath),
+		    							resFile.toPath(), new CopyOption[] { StandardCopyOption.REPLACE_EXISTING });
+		    				}
+			    		}
 			    	}
 				}
 			    in.close();
+			    // adjust mAbsoluteResBasePath
+			    mAbsoluteResBasePath = absolutePathParent;
 			} else {
 				isWritable = true;
 				File genDir = new File(mAbsoluteGenBasePath+"/gen/"+packageName);
@@ -107,12 +143,6 @@ public abstract class RBase {
 			write(makePackage(mPackageName));
 			write(startClass());
 
-			if (mAbsoluteGenBasePath.equals(Global.corePath)) {
-				mClassBuildConfig = Class.forName(mPackageName+".BuildConfig");
-			} else {
-				mClassBuildConfig = MyUtils.getProjectClass(mPackageName+".BuildConfig");
-			}
-			
 //			if (true) {
 				parseAllValuesByDOM();
 //			} else {
@@ -302,6 +332,7 @@ public abstract class RBase {
 		//
 		final String animPath = mAbsoluteResBasePath+"/res/anim/";
 		mCheckFolder.loop(animPath, new OnDiscoverListener() {
+			
 			@Override
 			public void processFile(String path, String pathWithoutEx) throws IOException {
 				write(makePublicStaticInt(pathWithoutEx, mStartIndex));
@@ -317,6 +348,7 @@ public abstract class RBase {
 		
 		final String menuPath = mAbsoluteResBasePath+"/res/menu/";
 		mCheckFolder.loop(menuPath, new OnDiscoverListener() {
+			
 			@Override
 			public void processFile(String path, String pathWithoutEx) throws IOException {
 				write(makePublicStaticInt(pathWithoutEx, mStartIndex));
@@ -334,6 +366,7 @@ public abstract class RBase {
 		
 		final String layoutPath = mAbsoluteResBasePath+"/res/drawable-hdpi/";
 		mCheckFolder.loop(layoutPath, new OnDiscoverListener() {
+			
 			@Override
 			public void processFile(String path, String pathWithoutEx) throws IOException {
 				if (pathWithoutEx.endsWith(".9")) {
@@ -353,6 +386,7 @@ public abstract class RBase {
 	private void parseDrawableByDOM() throws Exception {
 		final String layoutPath = mAbsoluteResBasePath+"/res/drawable/";
 		mCheckFolder.loop(layoutPath, new OnDiscoverListener() {
+			
 			@Override
 			public void processFile(String path, String pathWithoutEx) throws IOException {
 				write(makePublicStaticInt(pathWithoutEx, mStartIndex));
@@ -367,6 +401,7 @@ public abstract class RBase {
 		
 		final String layoutPath = mAbsoluteResBasePath+"/res/layout/";
 		mCheckFolder.loop(layoutPath, new OnDiscoverListener() {
+			
 			@Override
 			public void processFile(String path, String pathWithoutEx) throws IOException {
 				write(makePublicStaticInt(pathWithoutEx, mStartIndex));
@@ -803,7 +838,7 @@ public abstract class RBase {
 			String packageName = mPackageName;
 			String[] names = item.getAttributeValue("name").split(":");
 			if (names.length >= 2) {
-				packageName = Global.corePackageName;
+				packageName = mCorePackageName;
 				itemName = names[1];
 			} else {
 				packageName = mPackageName;
@@ -926,7 +961,7 @@ public abstract class RBase {
 					
 					if (temps[0].contains(":")) { 
 						name = temps[0].substring(temps[0].indexOf(":")+1);
-						prefix.append(Global.corePackageName).append(".");
+						prefix.append(mCorePackageName).append(".");
 					} else {
 						name = temps[0];
 					}
