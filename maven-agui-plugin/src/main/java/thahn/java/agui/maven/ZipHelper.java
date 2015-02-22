@@ -4,7 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 public class ZipHelper {
@@ -51,5 +57,33 @@ public class ZipHelper {
 				}
 			}
 		}
+	}
+	
+	public boolean extract(String srcZip, String targetPath, OnCondition listener) throws IOException {
+		ZipFile in = new ZipFile(srcZip);
+	    Enumeration<? extends ZipEntry> entries = in.entries();
+	    while (entries.hasMoreElements()) {
+	    	ZipEntry entry = entries.nextElement();
+	    	String zipEntryPath = entry.getName();
+	    	if (listener.onCondition(zipEntryPath)) {
+	    		zipEntryPath = "/" + zipEntryPath;
+				File resFile = Paths.get(targetPath, zipEntryPath).toFile();
+				if (entry.isDirectory()) {
+					if (!resFile.exists() && !resFile.mkdir()) {
+//						Log.t(TAG, "can not make new Res Directory : " + resFile.getAbsolutePath());
+						return false;
+					} 
+				} else {
+					Files.copy(in.getInputStream(entry),
+							resFile.toPath(), new CopyOption[] { StandardCopyOption.REPLACE_EXISTING });
+				}
+	    	}
+		}
+	    in.close();
+	    return true;
+	}
+	
+	public interface OnCondition {
+		boolean onCondition(String zipentry);
 	}
 }

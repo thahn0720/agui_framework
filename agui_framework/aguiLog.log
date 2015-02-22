@@ -1,2 +1,1 @@
-ERROR {thahn.java.agui.test.view.ListViewCheckedTestActivity} [2015-02-08 03:40:29,876] - new fade in
-ERROR {thahn.java.agui.test.view.HorizontalScrollViewTestActivity} [2015-02-08 03:40:35,260] - new fade in
+ERROR {main              } [2015-02-19 20:17:04,518] - wrong arguments. : projectPath, package, mainActivity fullname is needed.

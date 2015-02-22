@@ -5,11 +5,13 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.io.File;
 
+import com.google.common.base.Strings;
+
 import thahn.java.agui.AguiConstants;
 import thahn.java.agui.Global;
-import thahn.java.agui.Main;
 import thahn.java.agui.app.controller.HandlerThread;
 import thahn.java.agui.app.controller.Looper;
+import thahn.java.agui.exception.NotExistException;
 import thahn.java.agui.jmx.JmxConnectorHelper;
 import thahn.java.agui.res.ManifestParser;
 import thahn.java.agui.res.RMaker;
@@ -34,12 +36,12 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 	public ApplicationController() {
 		super();
 		// FIXME : hardcoding
-		String temp = "D:/Dropbox/agui-sdk-windows";//System.getenv(AguiConstants.ENV_AGUI_HOME);
-//		if (temp == null || temp.trim().equals("")) {
-//			throw new NotExistException("Env Variable : AGUI_HOME is not defined. " +
-//					"before executing agui app, AGUI_HOME should be defined. " +
-//					"click the setAguiHome batch file in sdk tool's folder");
-//		}
+		String temp = "D:/agui-sdk-windows";//System.getenv(AguiConstants.ENV_AGUI_HOME);
+		if (Strings.isNullOrEmpty(temp)) {
+			throw new NotExistException("Env Variable : AGUI_HOME is not defined. " +
+					"before executing agui app, AGUI_HOME should be defined like ANDROID_HOME." +
+					"click the setAguiHome batch file in sdk tool's folder");
+		}
 		Global.aguiHomePath = temp + AguiConstants.PATH_DATA;
 		//
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -70,9 +72,8 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 	private void init(String projectPath, String projectPackageName) {
 		// init resources
 		ResourcesManager.getInstance();
-		
+		// init global constants
 		Global.init();
-				
 		Global.corePath = MyUtils.getClassPath(thahn.java.agui.Main.class);
 		Global.coreResBasePath = Global.corePath;
 		String[] ends = new String[]{"/bin/", "/target/classes/"};
@@ -87,10 +88,10 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 				}
 			}
 		}
-		Global.projectPath = projectPath;//"E:/Workspace/Java/AGUI_ApiDemo";
+		Global.projectPath = projectPath;
 		Global.projectResBasePath = Global.projectPath;
 		Global.corePackageName = thahn.java.agui.Main.class.getPackage().getName();
-		Global.projectPackageName = projectPackageName;//manifestInfo.packageName;//"dksxogudsla.java.agui.test";
+		Global.projectPackageName = projectPackageName;
 		// core res path		
 		Global.coreDrawableImgPath = Global.corePath+"/res/drawable-hdpi/";
 		Global.coreDrawablePath = Global.corePath+"/res/drawable/";
@@ -103,8 +104,8 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 		Global.projectLayoutPath = Global.projectPath+"/res/layout/"; 
 		Global.projectValuesPath = Global.projectPath+"/res/values/";
 		Global.projectGenBasePath = Global.projectPath;
-		
-		Global.aguiProjectPath = Global.aguiHomePath + "/" + Global.projectPackageName + "/";
+		// agui project path
+		Global.aguiProjectPath = Global.aguiHomePath + AguiConstants.DIR_SEPERATOR + Global.projectPackageName + AguiConstants.DIR_SEPERATOR;
 		File projectFolder = new File(Global.aguiProjectPath);
 		if (!projectFolder.exists()) projectFolder.mkdirs();
 		
@@ -125,7 +126,7 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 				, Global.projectResBasePath, ResourcesManager.getInstance(), Global.projectPackageName);
 		projectRMaker.parse();
 		RMaker.recycle();
-		// parse from androidManifest.xml 
+		// parse from aguiManifest.xml 
 		ManifestParser manifestParser = new ManifestParser(ResourcesManager.getInstance());
 		manifestParser.parse(Global.projectPath);
 		

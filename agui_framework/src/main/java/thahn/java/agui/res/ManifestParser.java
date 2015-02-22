@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 
+import thahn.java.agui.AguiConstants;
 import thahn.java.agui.Global;
 import thahn.java.agui.app.ActivityInfo;
 import thahn.java.agui.app.ActivityManager;
@@ -84,7 +86,7 @@ public class ManifestParser {
 	
 	public void parse(String projectPath) {
 		try {
-			File xmlFile = new File(projectPath+"/AguiManifest.xml");
+			File xmlFile = Paths.get(projectPath, AguiConstants.AGUI_MANIFEST_NAME).toFile();
 			FileInputStream in = new FileInputStream(xmlFile);
 			BufferedInputStream bi = new BufferedInputStream(in);
 			SAXBuilder builder = new SAXBuilder();
@@ -92,6 +94,8 @@ public class ManifestParser {
 			Element root = doc.getRootElement();
 			if (!"manifest".equals(root.getName())) logWrongFormat();
 			Global.projectPackageName = mManifestInfo.packageName = root.getAttributeValue("package");
+			mManifestInfo.versionCode = getAttributeValue(root, "versionCode");
+			mManifestInfo.versionName = getAttributeValue(root, "versionName");
 			
 			parseApplication(root.getChild("application"));
 			
@@ -332,6 +336,8 @@ public class ManifestParser {
 	public class ManifestInfo {
 		public String mainActivity;
 		public String packageName;
+		public String versionCode;
+		public String versionName;
 		public int width;
 		public int height;
 	}

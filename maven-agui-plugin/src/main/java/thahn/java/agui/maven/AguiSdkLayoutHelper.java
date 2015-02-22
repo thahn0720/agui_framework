@@ -1,10 +1,6 @@
 package thahn.java.agui.maven;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
@@ -12,11 +8,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
+import javax.transaction.xa.Xid;
+
+import thahn.java.agui.maven.ZipHelper.OnCondition;
 import thahn.java.agui.maven.exception.AguiReleasePluginException;
 
 /**
@@ -30,7 +25,7 @@ public class AguiSdkLayoutHelper {
 	private final String 										version;
 	private final List<File>									moduleJarFiles;
 	private final File	 										baseSdkPath;
-	private File	 											aguiLibDir;
+	private File	 											aguiSdkDir;
 	private ZipHelper											zipHelper		= new ZipHelper();
 	
 	public AguiSdkLayoutHelper(String relativePath, String version, List<File> moduleJarFiles) {
@@ -54,14 +49,23 @@ public class AguiSdkLayoutHelper {
 			// platforms
 			File platformsPath = Paths.get(baseSdkPath.getAbsolutePath(), "platforms").toFile();
 			makeDirectory(platformsPath);
-			Path aguiLibPath = Paths.get(platformsPath.getAbsolutePath(), "agui-" + version);
-			aguiLibDir = aguiLibPath.toFile();
-			makeDirectory(aguiLibDir);
-			// platforms/lib : move modules jar to lib 
+			Path aguiSdkPath = Paths.get(platformsPath.getAbsolutePath(), "agui-" + version);
+			aguiSdkDir = aguiSdkPath.toFile();
+			makeDirectory(aguiSdkDir);
+			File aguiSdkDataDir = Paths.get(aguiSdkDir.getAbsolutePath(), "data").toFile();
+			makeDirectory(aguiSdkDataDir);
+			// platforms/agui-version : move modules jar to agui 
 			for (File moduleJar : moduleJarFiles) {
-				Path aguiLibFile = Paths.get(aguiLibPath.toFile().getAbsolutePath(), moduleJar.getName());
+				Path aguiLibFile = Paths.get(aguiSdkPath.toFile().getAbsolutePath(), moduleJar.getName());
 				Files.copy(Paths.get(moduleJar.getAbsolutePath()), aguiLibFile
 						, new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES });
+				if (moduleJar.getName().contains(AguiConstants.AGUI_FRAMEWORK_NAME)) {
+					File fileTarget = Paths.get(aguiLibFile.toFile().getAbsolutePath(), moduleJar.getName()).toFile();
+					File renameTarget = Paths.get(aguiLibFile.toFile().getAbsolutePath(), AguiConstants.AGUI_SDK_JAR).toFile();
+					fileTarget.renameTo(renameTarget);
+					// extract zip
+					zipHelper.extract(moduleJar.getAbsolutePath(), aguiSdkDataDir.getAbsolutePath(), onCondition);
+				}
 			}
 			// tools
 			File toolsPath = Paths.get(baseSdkPath.getAbsolutePath(), "tools").toFile();
@@ -87,6 +91,17 @@ public class AguiSdkLayoutHelper {
 	       throw new AguiReleasePluginException(message);
 		}
 	}
+	
+	private OnCondition onCondition = new OnCondition() {
+		
+		@Override
+		public boolean onCondition(String zipentry) {
+			if (zipentry.startsWith("res/") || zipentry.equals("AguiManifest.xml")) {
+				return true;
+			} 
+			return false;
+		}
+	};
 
 	/**
 	 * 
@@ -111,7 +126,6 @@ public class AguiSdkLayoutHelper {
 	}
 
 	public class Result {
-		
 		/*package*/ boolean ret;
 		/*package*/ String reason;
 		/*package*/ Exception e;

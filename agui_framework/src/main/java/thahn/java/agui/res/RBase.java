@@ -99,38 +99,21 @@ public abstract class RBase {
 
 				ZipInputStream in = new ZipInputStream(new BufferedInputStream(new FileInputStream(mAbsoluteResBasePath)));
 			    ZipEntry entry = null;
-			    String absolutePathParent = new File(mAbsoluteResBasePath).getParent();
-			    File newResDir = Paths.get(absolutePathParent, AguiConstants.RES_DIR_NAME).toFile();
-			    String newResDirPath = newResDir.getAbsolutePath();
-			    boolean neededExtract = !newResDir.exists();
-			    if (neededExtract && !newResDir.mkdirs()) {
-			    	Log.t(TAG, "can not make new Res Directory : " + newResDirPath);
-			    }
 			    while ((entry = in.getNextEntry()) != null) {
 			    	String zipEntryPath = entry.getName();
-			    	if (zipEntryPath.startsWith(AguiConstants.RES_DIR_NAME + AguiConstants.DIR_SEPERATOR)) {
+			    	if (zipEntryPath.startsWith(AguiConstants.DATA_RES_DIR_NAME + AguiConstants.DIR_SEPERATOR)
+			    			|| zipEntryPath.equals(AguiConstants.AGUI_MANIFEST_NAME)) {
 			    		zipEntryPath = "/" + zipEntryPath;
 			    		if (!zipEntryPath.endsWith("/") && (zipEntryPath.endsWith(".xml") || zipEntryPath.endsWith(".png") || zipEntryPath.endsWith(".jpg") || zipEntryPath.endsWith(".jpeg") || zipEntryPath.endsWith(".bmp"))) {
 			    			// FIXME : seperate container variable by folder like mValuesPathList , mMenuPathList and so on.
 			    			mPathList.add(zipEntryPath);
 			    		}
-			    		
-			    		if (neededExtract) {
-		    				File resFile = Paths.get(absolutePathParent, zipEntryPath).toFile();
-		    				if (entry.isDirectory()) {
-		    					if (!resFile.exists() && !resFile.mkdir()) {
-		    						Log.t(TAG, "can not make new Res Directory : " + resFile.getAbsolutePath());
-		    					} 
-		    				} else {
-		    					Files.copy(mClassBuildConfig.getResourceAsStream(zipEntryPath),
-		    							resFile.toPath(), new CopyOption[] { StandardCopyOption.REPLACE_EXISTING });
-		    				}
-			    		}
 			    	}
 				}
 			    in.close();
 			    // adjust mAbsoluteResBasePath
-			    mAbsoluteResBasePath = absolutePathParent;
+			    mAbsoluteResBasePath = Paths.get(new File(mAbsoluteResBasePath).getParent(), AguiConstants.DATA_DIR_NAME)
+			    		.toFile().getAbsolutePath();
 			} else {
 				isWritable = true;
 				File genDir = new File(mAbsoluteGenBasePath+"/gen/"+packageName);

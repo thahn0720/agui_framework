@@ -112,6 +112,16 @@
 
 	<build>
 		<finalName>agui_framework</finalName>
+		<!-- specify resource to include -->
+<!-- 		<resources> -->
+<!-- 			<resource> -->
+<!-- 				<directory>${basedir}</directory> -->
+<!-- 				<includes> -->
+<!-- 					<include>AguiManifest.xml</include> -->
+<!-- 				</includes> -->
+<!-- 			</resource> -->
+<!-- 		</resources> -->
+		<!-- plugins -->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
