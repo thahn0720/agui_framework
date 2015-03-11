@@ -14,12 +14,12 @@ import thahn.java.agui.view.View;
 
 
 public class MyPanel extends JPanel implements Serializable {
-	private static final long 											serialVersionUID 	= 3254168988273518199L;
+	private static final long 									serialVersionUID 	= 3254168988273518199L;
 
-	View																mDecorView;
-	Image 																mOffScreen;
-	Graphics 															mOffGc;
-	Drawable															mBackgroundDrawable;
+	/*package*/ View											mDecorView;
+	/*package*/ Image 											mOffScreen;
+	/*package*/ Graphics 										mOffGc;
+	/*package*/ Drawable										mBackgroundDrawable;
 	
 	public MyPanel() {
 		super(new BorderLayout());
@@ -27,7 +27,6 @@ public class MyPanel extends JPanel implements Serializable {
 	
 	public void setView(View shellView) {
 		mDecorView = shellView;
-//		setBackground(Color.WHITE);
 		setOpaque(false);
 	}
 
@@ -90,14 +89,9 @@ public class MyPanel extends JPanel implements Serializable {
 		repaint();
 	}
 	
-//	public void setBackground(Color color) {
-////		setBackground(color);
-//		mBackgroundColor = color;
-//	}
-	
 	public void setBackgroundColor(int rgba) {
 		mBackgroundDrawable = ColorDrawable.load(rgba);
-//		setBackgroundColor(thahn.java.agui.graphics.Color.toAwtColor(0x0045ffff));//thahn.java.agui.graphics.Color.toAwtColor(rgb));
+		// setBackgroundColor(thahn.java.agui.graphics.Color.toAwtColor(0x0045ffff));//thahn.java.agui.graphics.Color.toAwtColor(rgb));
 	}
 	
 	public void setTranslucent(boolean is) {

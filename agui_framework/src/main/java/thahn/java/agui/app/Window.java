@@ -345,7 +345,7 @@ public class Window extends JFrame {
 		if (getComponentCount()>=1) {
 			Activity curActivity = getCurrentActivity();
 			if (curActivity != null) {
-//				requestFeature(DEFAULT_FEATURES);
+				// requestFeature(DEFAULT_FEATURES);
 				mFeatures = DEFAULT_FEATURES;
 				curActivity.setActivityInfo(Window.this, curActivity, curActivity.mActivityInfo);
 				refreshActivity(a.mActivityInfo, curActivity.mActivityInfo);

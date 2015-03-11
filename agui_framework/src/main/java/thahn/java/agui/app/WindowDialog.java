@@ -2,12 +2,15 @@ package thahn.java.agui.app;
 
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
 import thahn.java.agui.settings.AguiSettings;
+import thahn.java.agui.utils.Log;
 import thahn.java.agui.view.View;
 import thahn.java.agui.view.ViewGroup;
 
@@ -21,6 +24,7 @@ public class WindowDialog extends Dialog implements DialogInterface {
 	private JFrame														mFrame;
 	private MyPanel														mPanel;
 	private	InputController												mInputController;
+	// ActivityInputController
 
 	public WindowDialog(Context context) {
 		super(context);
@@ -41,7 +45,7 @@ public class WindowDialog extends Dialog implements DialogInterface {
 		
 		if (dialog.mContext instanceof ContextWrapper) { // without view
 			((ContextWrapper) dialog.mContext).setPanel(mPanel);  
-		} else if (dialog.mContext instanceof ContextThemeWrapper) {
+		} else if (dialog.mContext instanceof ContextThemeWrapper) { // application controller or activity
 			ContextWrapper newContext = new ContextWrapper();
 			newContext.setPanel(mPanel);
 			dialog.mContext = newContext;
@@ -54,8 +58,8 @@ public class WindowDialog extends Dialog implements DialogInterface {
 		mBundle = dialog.mBundle;
 		mOnDismissListener = dialog.mOnDismissListener;
 		
-		setView(dialog.mDialogView);
-		// 실제 view에 들어간 context가 dialog내에 있는 것은 전에 것이 셋 되서 들어와서 이렇게 됨
+		replaceContext(mDialogView);
+		setView(mDialogView);
 	}
 	
 	private void init() {
@@ -72,8 +76,28 @@ public class WindowDialog extends Dialog implements DialogInterface {
 		mPanel = new MyPanel();
 		mFrame.add(mPanel);
 		mInputController = new InputController(mPanel);
+		// panel listener not working. so add listener in frame
+		for (KeyListener keyListener : mPanel.getKeyListeners()) {
+			mFrame.addKeyListener(keyListener);
+		}
 	}
 
+	private void replaceContext(View dialogView) {
+		if (dialogView instanceof ViewGroup) {
+			ViewGroup group = (ViewGroup) dialogView;
+			for (int i = 0; i < group.getChildCount(); i++) {
+				View view = group.getChildAt(i);
+				if (view instanceof ViewGroup) {
+					replaceContext(view);
+				} else {
+					view.setContext(mContext);
+				}
+			}
+		} else {
+			dialogView.setContext(mContext);
+		}
+	}
+	
 	@Override
 	void setView(View view) {
 		super.setView(view);
@@ -84,20 +108,19 @@ public class WindowDialog extends Dialog implements DialogInterface {
 				, AguiSettings.getInstance().getDefaultWindowDialogHeight());
 		mDialogView.onLayout(true, 0, 0, mDialogView.getWidth(), mDialogView.getHeight());
 		mDialogView.arrange();
-		mPanel.setView((ViewGroup)mDialogView);
+		mPanel.setView((ViewGroup) mDialogView);
 	}
 
 	@Override
 	public void show() {
 		super.show();
-		
 		mFrame.setSize(mDialogView.getWidth(), mPanel.mDecorView.getHeight());
 		mFrame.setVisible(true);
 	}
 
 	@Override
 	public void dismiss() {
-//		super.dismiss();
+		// super.dismiss();
 		mFrame.dispose();
 		mFrame.setVisible(false);
 		if(mOnDismissListener != null) mOnDismissListener.onDismiss(this);

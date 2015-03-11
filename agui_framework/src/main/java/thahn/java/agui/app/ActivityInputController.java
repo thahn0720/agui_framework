@@ -27,7 +27,7 @@ public class ActivityInputController extends InputController {
 	}
 
 	@Override
-	/*package*/ void preprocessKeyEvent(KeyEvent e) {
+	protected void preprocessKeyEvent(KeyEvent e) {
 		super.preprocessKeyEvent(e);
 		
 		int keyCode = e.getKeyCode();

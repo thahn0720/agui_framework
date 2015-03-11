@@ -58,12 +58,12 @@ public class InputController {
 		panel.removeMouseWheelListener(mouseWheelListener);
 	}
 
-	/*package*/ void preprocessKeyEvent(KeyEvent e) {
+	protected void preprocessKeyEvent(KeyEvent e) {
 		
 	}
 	
 	// keyPressed -> keyTyped -> keyReleased
-	/*pacakge*/ KeyListener	keyListener	= new KeyListener() {
+	private KeyListener	keyListener	= new KeyListener() {
 
     	@Override
 		public void keyPressed(KeyEvent e) {
@@ -86,7 +86,7 @@ public class InputController {
 		}
 	};
 	
-	/*package*/ MouseListener mouseListener = new MouseListener() {
+	private MouseListener mouseListener = new MouseListener() {
 		
 		@Override
 		public void mouseReleased(MouseEvent e) {
@@ -128,7 +128,7 @@ public class InputController {
 		}
 	};
 	
-	MouseMotionListener mouseMotionListener = new MouseMotionListener() {
+	private MouseMotionListener mouseMotionListener = new MouseMotionListener() {
 		
 		@Override
 		public void mouseMoved(MouseEvent e) {
@@ -147,7 +147,7 @@ public class InputController {
 		}
 	}; 
 	
-	MouseWheelListener mouseWheelListener = new MouseWheelListener() {
+	private MouseWheelListener mouseWheelListener = new MouseWheelListener() {
 		
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {

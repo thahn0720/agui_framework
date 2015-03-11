@@ -37,7 +37,7 @@ public class Dialog implements DialogInterface, OnTouchListener, View.OnClickLis
         this(context, theme, true);
     }
 
-    Dialog(Context context, int theme, boolean createContextWrapper) {
+    /*package*/ Dialog(Context context, int theme, boolean createContextWrapper) {
     	mContext = context;
 //        if (theme == 0) {
 //            TypedValue outValue = new TypedValue();

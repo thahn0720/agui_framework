@@ -4,10 +4,10 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.io.File;
-
-import com.google.common.base.Strings;
+import java.nio.file.Paths;
 
 import thahn.java.agui.AguiConstants;
+import thahn.java.agui.BuildTool;
 import thahn.java.agui.Global;
 import thahn.java.agui.app.controller.HandlerThread;
 import thahn.java.agui.app.controller.Looper;
@@ -20,6 +20,8 @@ import thahn.java.agui.settings.AguiSettings;
 import thahn.java.agui.utils.AguiUtils;
 import thahn.java.agui.utils.Log;
 import thahn.java.agui.utils.MyUtils;
+
+import com.google.common.base.Strings;
 
 /**
  * 
@@ -76,33 +78,38 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 		Global.init();
 		Global.corePath = MyUtils.getClassPath(thahn.java.agui.Main.class);
 		Global.coreResBasePath = Global.corePath;
-		String[] ends = new String[]{"/bin/", "/target/classes/"};
+		String[] ends = new String[]{BuildTool.DEFAULT.getBinPath(), BuildTool.MAVEN.getBinPath()}; // ant, maven
 		for (String end : ends) {
 			if (Global.corePath.endsWith(end)) {
 				Global.corePath = Global.corePath.substring(0, Global.corePath.length() - end.length());
 				
-				if ("/bin/".equals(end)) {
-					Global.coreResBasePath = Global.corePath; 
-				} else if ("/target/classes/".equals(end)) {
+				if (BuildTool.DEFAULT.getBinPath().equals(end)) {
+					Global.coreResBasePath = Global.corePath;
+					Global.buildTool = BuildTool.DEFAULT;
+				} else if (BuildTool.MAVEN.getBinPath().equals(end)) {
 					Global.coreResBasePath = Global.corePath + "/src/main/resources";
+					Global.buildTool = BuildTool.MAVEN;
 				}
 			}
 		}
 		Global.projectPath = projectPath;
 		Global.projectResBasePath = Global.projectPath;
+		if (Global.buildTool == BuildTool.MAVEN) {
+			Global.projectResBasePath = Paths.get(Global.projectResBasePath, BuildTool.MAVEN.getResPath()).toFile().getAbsolutePath();
+		}
 		Global.corePackageName = thahn.java.agui.Main.class.getPackage().getName();
 		Global.projectPackageName = projectPackageName;
 		// core res path		
-		Global.coreDrawableImgPath = Global.corePath+"/res/drawable-hdpi/";
-		Global.coreDrawablePath = Global.corePath+"/res/drawable/";
-		Global.coreLayoutPath = Global.corePath+"/res/layout/"; 
-		Global.coreValuesPath = Global.corePath+"/res/values/";
+		Global.coreDrawableImgPath = Global.coreResBasePath + "/res/drawable-hdpi/";
+		Global.coreDrawablePath = Global.coreResBasePath + "/res/drawable/";
+		Global.coreLayoutPath = Global.coreResBasePath + "/res/layout/"; 
+		Global.coreValuesPath = Global.coreResBasePath + "/res/values/";
 		Global.coreGenBasePath = Global.corePath;
 		// project res path		
-		Global.projectDrawableImgPath = Global.projectPath+"/res/drawable-hdpi/";
-		Global.projectDrawablePath = Global.projectPath+"/res/drawable/";
-		Global.projectLayoutPath = Global.projectPath+"/res/layout/"; 
-		Global.projectValuesPath = Global.projectPath+"/res/values/";
+		Global.projectDrawableImgPath = Global.projectResBasePath + "/res/drawable-hdpi/";
+		Global.projectDrawablePath = Global.projectResBasePath + "/res/drawable/";
+		Global.projectLayoutPath = Global.projectResBasePath + "/res/layout/"; 
+		Global.projectValuesPath = Global.projectResBasePath + "/res/values/";
 		Global.projectGenBasePath = Global.projectPath;
 		// agui project path
 		Global.aguiProjectPath = Global.aguiHomePath + AguiConstants.DIR_SEPERATOR + Global.projectPackageName + AguiConstants.DIR_SEPERATOR;

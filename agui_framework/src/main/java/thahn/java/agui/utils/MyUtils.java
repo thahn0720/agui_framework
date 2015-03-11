@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import thahn.java.agui.AguiConstants;
+import thahn.java.agui.BuildTool;
 import thahn.java.agui.Global;
 import thahn.java.agui.res.ResourcesManager;
 
@@ -60,7 +61,11 @@ public class MyUtils {
 	 */
 	public static Class<?> getProjectClass(String classPath) throws MalformedURLException, ClassNotFoundException{
 		if(Global.projectPath != null) {
-			URL classUrl = new File(Global.projectPath+"/bin/").toURL();
+			String path = Global.projectPath + BuildTool.DEFAULT.getBinPath();
+			if (Global.buildTool == BuildTool.MAVEN) {
+				path = Global.projectPath + BuildTool.MAVEN.getBinPath();
+			}
+			URL classUrl = new File(path).toURL();
 			URL[] classUrls = {classUrl};
 			URLClassLoader ucl = new URLClassLoader(classUrls);
 			return ucl.loadClass(makeFullPackageName(classPath));

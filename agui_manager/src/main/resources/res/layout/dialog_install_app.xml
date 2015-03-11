@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:agui="http://schemas.agui.com/apk/res/agui"
+	agui:layout_width="match_parent"
+	agui:layout_height="wrap_content"
+	agui:orientation="vertical"
+	agui:background="#ffffff"
+	agui:padding="20dip"
+	>
+	<TextView 
+	agui:layout_width="wrap_content"
+	agui:layout_height="wrap_content"
+	agui:text="the application path for installation"
+	/>
+	
+	<RelativeLayout
+		agui:layout_width="match_parent"
+		agui:layout_height="wrap_content"
+		>
+		<EditText 
+			agui:id="@+id/install_app_path"
+			agui:layout_width="match_parent"
+			agui:layout_height="wrap_content"
+			agui:layout_toLeftOf="@+id/btn_browse"
+			agui:hint="input the path"
+			/> 
+		<Button agui:id="@+id/btn_browse"
+			agui:layout_width="wrap_content"
+			agui:layout_height="wrap_content"
+			agui:layout_alignParentRight="true"
+			agui:text="Browse"
+			/>
+	</RelativeLayout>
+	
+	<Button agui:id="@+id/btn_install"
+	agui:layout_width="wrap_content"
+	agui:layout_height="wrap_content"
+	agui:text="Install"
+	/>
+</LinearLayout>

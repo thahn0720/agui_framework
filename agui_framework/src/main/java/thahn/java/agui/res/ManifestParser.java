@@ -28,6 +28,7 @@ import thahn.java.agui.app.IntentManager;
 import thahn.java.agui.app.ReceiverManager;
 import thahn.java.agui.app.ServiceInfo;
 import thahn.java.agui.app.ServiceManager;
+import thahn.java.agui.exception.NotSupportedException;
 import thahn.java.agui.exception.WrongFormatException;
 import thahn.java.agui.jmx.JmxConnectorHelper;
 import thahn.java.agui.utils.AguiUtils;
@@ -41,39 +42,6 @@ import thahn.java.agui.utils.ReflectionUtils;
  *
  */
 public class ManifestParser {
-//	<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-//		    package="wifi.smartphone.lge"
-//		    android:versionCode="1"
-//		    android:versionName="1.0" >
-//		    <uses-sdk android:minSdkVersion="8" />
-//		    <uses-feature android:name="android.hardware.wifi" />
-//		    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-//		    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-//	
-//			<application
-//			android:name="MyApp"
-//		    android:icon="@drawable/ic_launcher"
-//		    android:label="@string/app_name" >
-//		    <activity
-//		        android:name="wifi.smartphone.lge.MainActivity"
-//		        android:label="@string/app_name"
-//		        android:screenOrientation="portrait"
-//		        android:windowSoftInputMode="stateHidden" >
-//		        <intent-filter>
-//		            <action android:name="android.intent.action.MAIN" />
-//		
-//		            <category android:name="android.intent.category.LAUNCHER" />
-//		        </intent-filter>
-//		        <intent-filter>
-//		            <action android:name="wifi.smartphone.lge.WifiLogger" />
-//		        </intent-filter>
-//		    </activity>
-//		    
-//		    <activity
-//		        android:name="com.sec.eca.dialog.BootCompleteAttrScene"
-//		        android:label="@string/title_activity_boot_complete"
-//		        android:theme="@style/Theme.Dialog.Transparent" >
-//		    </activity>
 
 	private Resources												mResources;
 	private ManifestInfo											mManifestInfo;
@@ -256,11 +224,13 @@ public class ManifestParser {
 					String value = getAttributeValue(b, "name");
 					if ("action".equals(name)) {
 						intentFilter.addAction(value);
-						if (Intent.ACTION_MAIN.equals(value)) mManifestInfo.mainActivity = contextName; 
 					} else if ("category".equals(name)) {
 						intentFilter.addCategory(value);
+						if (Intent.CATEGORY_LAUNCHER.equals(value)) {
+							mManifestInfo.mainActivity = contextName; 
+						}
 					} else if ("data".equals(name)) {
-						
+						throw new NotSupportedException("data tag not supported");
 					}
 				}
 				ManagedComponent managedCom = new ManagedComponent();
@@ -282,16 +252,6 @@ public class ManifestParser {
 		}
 		return null;
 	}
-	
-//	private String makeFullPackageName(String attrValue) {
-//		StringBuilder builder = new StringBuilder();
-//		if (attrValue.startsWith(".")) { // .activity
-//			builder.append(Global.projectPackageName).append(attrValue);
-//		} else if (!attrValue.startsWith(Global.projectPackageName)) { // activity
-//			builder.append(Global.projectPackageName).append(".").append(attrValue);
-//		} 
-//		return builder.toString();
-//	}
 	
 	private void logWrongFormat() {
 		Log.e("Values Format is not correct");
@@ -315,20 +275,26 @@ public class ManifestParser {
 		
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+			}
+			if (getClass() != obj.getClass()) {
 				return false;
+			}
 			ManagedComponent other = (ManagedComponent) obj;
 			if (component == null) {
-				if (other.component != null)
+				if (other.component != null) {
 					return false;
-			} else if (!component.equals(other.component))
+				}
+			} else if (!component.equals(other.component)) {
 				return false;
-			if (which != other.which)
+			}
+			if (which != other.which) {
 				return false;
+			}
 			return true;
 		}
 	}

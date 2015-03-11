@@ -138,6 +138,16 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<finalName>${artifactId}-${release.version}</finalName>
+					<archive>
+						<index>true</index>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+						<manifestEntries>
+							<Main-Class>thahn.java.agui.Main</Main-Class>
+							<url>${project.url}</url>
+						</manifestEntries>
+					</archive>
 				</configuration>
 			</plugin>
 			<plugin>

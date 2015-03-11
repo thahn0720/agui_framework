@@ -19,7 +19,7 @@ public class TestService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		try {
 			//
-			showDialog(1);			// non-blocking
+//			showDialog(1);			// non-blocking
 //			showDialog(0, true);	// blocking
 		} catch (Exception e) {
 			e.printStackTrace();

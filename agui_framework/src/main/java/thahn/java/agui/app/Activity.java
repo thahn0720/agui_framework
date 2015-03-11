@@ -814,13 +814,12 @@ public class Activity extends ContextThemeWrapper implements LayoutInflater.Fact
 		ManagedDialog managed = new ManagedDialog();
 		managed.dialog = dialog;
 		managed.dialog.dispatchOnCreate(bundle);
-//		managed.dialog.onCreate(bundle);
 		if (bundle != null) {
 			managed.bundle = bundle;
 		}
 		mManagedDialogs.add(managed);
 		((ViewGroup) mPanel.mDecorView).addView(managed.dialog.mDialogView);
-//		mPanel.invalidate();
+		// mPanel.invalidate();
 	}
     
     @Override

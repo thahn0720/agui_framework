@@ -873,15 +873,12 @@ public class View implements LayoutObserver {
     public final Context getContext() {
         return mContext;
     }
+    
+    @AguiSpecific
+    public void setContext(Context context) {
+    	mContext = context;
+    }
 
-//	public void setWidth(int mWidth) {
-//		this.mWidth = mWidth;
-//	}
-//	
-//	public void setHeight(int mHeight) {
-//		this.mHeight = mHeight;
-//	}
-	
 	public int getWidth() {
 		if (mWidth < 0) {
 			mWidth = 0;

@@ -20,6 +20,7 @@
 		<java_version>1.7</java_version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.url>https://github.com/thahn0720/agui_framework</project.url>
 		<release.version>0.0.1-SNAPSHOT</release.version>
 		<agui.framework.folder.name>agui_framework</agui.framework.folder.name>
 		<agui.manager.folder.name>agui_manager</agui.manager.folder.name>

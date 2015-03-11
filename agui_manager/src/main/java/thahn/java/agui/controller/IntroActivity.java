@@ -18,6 +18,9 @@ public class IntroActivity extends Activity {
 		findViewById(R.id.view1).setOnClickListener(onClickListener);
 		findViewById(R.id.view2).setOnClickListener(onClickListener);
 		findViewById(R.id.view3).setOnClickListener(onClickListener);
+		// start service 
+		Intent intent = new Intent(IntroActivity.this, TestService.class);
+		startService(intent);
 	}
 	
 	OnClickListener onClickListener = new OnClickListener() {
@@ -25,8 +28,6 @@ public class IntroActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			Log.e("click : " + v.getId());
-			Intent intent = new Intent(IntroActivity.this, TestService.class);
-			startService(intent);
 		}
 	};
 }

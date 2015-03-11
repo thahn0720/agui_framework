@@ -126,14 +126,7 @@ public abstract class RBase {
 			write(makePackage(mPackageName));
 			write(startClass());
 
-//			if (true) {
-				parseAllValuesByDOM();
-//			} else {
-//				parseAttrByDOM();
-//				parseStyleableByDOM();			
-//				parseValuesByDOM();
-//			}
-			
+			parseAllValuesByDOM();
 			mStartIndex += INDEX_GAP;
 			parseIdByDOM();
 			mStartIndex += INDEX_GAP;
@@ -156,158 +149,187 @@ public abstract class RBase {
 		}
 	}
 	
-// <resource>	
-//	<style name="View">
-//    <item name="android:textSize">13dip</item>
-	private void parseStyleableByDOM() throws JDOMException, IOException {
-		String[] paths = new String[]{ "/res/values/styles.xml"
-									 , "/res/values/themes.xml" };
-		
-		write(makePublicStaticFinalClass("style"));
-		
-		for (String path : paths) {//mClassR.getProtectionDomain().getCodeSource().getLocation().getPath() -5
-			InputStream in = getInputStream(path);
-			if (in == null) continue;
-			
-			BufferedInputStream bi = new BufferedInputStream(in);
-			SAXBuilder builder = new SAXBuilder();
-			Document doc = builder.build(bi);
-			Element root = doc.getRootElement();
-			if (!"resources".equals(root.getName())) logWrongFormat();
-			String packageName = mPackageName;//"dksxogudsla.java.agui";//R.class.getPackage().getName();
-			String simpleName = "R";//R.class.getSimpleName();
-			List<Element> elements = (List<Element>) root.getChildren();
-			for (Element element : elements) {
-				TreeMap<String, String> styleMap = new TreeMap<>();
-				String eName = element.getName();
-				if (!"style".equals(eName)) logWrongFormat();
-				String styleName = element.getAttributeValue("name");
-				String parentName = element.getAttributeValue("parent");
-				// process parent by attr
-				if (parentName != null) {
-					for (;;) {
-						Element eParent = getElement(elements, "name", parentName);
-						if (eParent == null) {
-							Log.t("xml error : above all, parent's attr should be positioned on top of a citing child");
-						}
-						for (Element item : (List<Element>) eParent.getChildren()) {
-							addStyleabItem(styleMap, item, packageName, simpleName);
-						}
-						parentName = eParent.getAttributeValue("parent");
-						if (parentName == null) break;
-					}
-				}
-				// process parent bt "."
-				if (styleName.contains(".")) {
-					String[] parents = styleName.replace(".", "_").split("_");
-					for (int i=0;i<parents.length-1;++i) {
-						String parentTemp = parents[i];
-						Element eParent = getElement(elements, "name", parentTemp);
-						if (eParent == null) {
-							// TODO : implement and modify when custom
-							Log.t("xml error : above all, parent's attr should be positioned on top of a citing child");
-						}
-						for (Element item : (List<Element>) eParent.getChildren()) {
-							addStyleabItem(styleMap, item, packageName, simpleName);
-						}
-					}
-					styleName = styleName.replace(".", "_");
-				}
-				//
-				String declare = new StringBuilder("\t\tpublic static final int[][] ").append(styleName).append(" = new int[][]{").toString();
-				write(declare.getBytes());
-				
-				for (Element item : (List<Element>) element.getChildren()) {
-	//				if (!"item".equals(item.getName())) logWrongFormat();
-					addStyleabItem(styleMap, item, packageName, simpleName);
-				}
-				
-				for (Entry<String, String> entry : styleMap.entrySet()) {
-					String arrayItem = new StringBuilder("\r\n\t\t\t{").append(entry.getKey()).append(", ").append(entry.getValue()).append("},").toString();
-					write(arrayItem.getBytes());
-				}
-				write("\r\n\t\t};\r\n".getBytes());
-			}
-			
-			bi.close();
-			in.close();
-		}
-//		
-		write(endClass());
-	}
+	//****************************************************************************************
+	// new ver
+	//****************************************************************************************
+	private List<ResourceInfo> mStringRes = new ArrayList<ResourceInfo>();
+	private List<ResourceInfo> mIntegerRes = new ArrayList<ResourceInfo>();
+	private List<ResourceInfo> mBoolRes = new ArrayList<ResourceInfo>();
+	private List<ResourceInfo> mColorRes = new ArrayList<ResourceInfo>();
+	private List<ResourceInfo> mDimenRes = new ArrayList<ResourceInfo>();
+	private List<StyleResource> mAttrRes = new ArrayList<StyleResource>();
+	private List<StyleResource> mDeclareStyleableRes = new ArrayList<StyleResource>();
+	private List<StyleResource> mStyleRes = new ArrayList<StyleResource>();
 	
-	private void addStyleabItem(TreeMap<String, String> styleMap, Element item, String packageName, String simpleName) {
-		String[] names = item.getAttributeValue("name").split(":");
-		String itemName = null;
-		if (names.length >= 2) {
-			itemName = names[1];
+	private static HashMap<String, AttrInfo> mAttrNameMap = new HashMap<String, AttrInfo>();
+	
+	/**
+	 * parse all xml values and set resource container
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	private void parseAllValuesByDOM() throws Exception {
+		String valuesPath = "/res/values/";
+		InputStream in = null;
+		List<String> valuesPathList = null;
+		
+		if (isJar()) {
+			valuesPathList = Lists.newArrayList();
+		    for (String path : mPathList) {
+		    	if (path.contains(valuesPath)) {
+		    		valuesPathList.add(path);
+		    	}
+			}
 		} else {
-			itemName = names[0];
-		}
-		String value = item.getValue();
-		String attrName = //itemName;
-						itemName.split("_")[1];
-		String temp = mEnumRes.get(attrName.hashCode(), value.hashCode());
-		if (temp != null) {
-			value = temp;
-		}
-		String name = new StringBuilder(packageName).append(".").append(simpleName).append(".attr.").append(itemName).toString();
-		styleMap.put(name, value);
-	}
-	
-	private Element getElement(List<Element> list, String attrName, String name) {
-		for (Element e : list) {
-			if (name.equals(e.getAttributeValue(attrName))) return e;
-		}
-		return null;
-	}
-	
-	//<resources>
-//	<declare-styleable name="View">
-//    <attr format="string" name="id" />
-	private void parseAttrByDOM() throws JDOMException, IOException {
-		String path = "/res/values/attrs.xml";
-		InputStream in = getInputStream(path);
-		if (in == null) return ;
-//		
-		write(makePublicStaticFinalClass("attr"));
-//		
-//		FileInputStream in = new FileInputStream(xmlFile);
-		BufferedInputStream bi = new BufferedInputStream(in);
-		SAXBuilder builder = new SAXBuilder();
-		Document doc = builder.build(bi);
-		Element root = doc.getRootElement();
-		if (!"resources".equals(root.getName())) logWrongFormat();
-		List<Element> elements = (List<Element>) root.getChildren();
-		for (Element element : elements) {
-			if (!"declare-styleable".equals(element.getName())) logWrongFormat();
-			String declareName = element.getAttributeValue("name");
-			write(makePublicStaticInt(declareName, element.getChildren().size()));
-			for (Element attr : (List<Element>) element.getChildren()) {
-				if (!"attr".equals(attr.getName())) logWrongFormat();
-				String attrName = attr.getAttributeValue("name");
-				String attrFormat = attr.getAttributeValue("format");
-				if (attrFormat == null) {
-					List<Element> children = (List<Element>) attr.getChildren();
-					if (children.size() > 0) {
-						HashMap<Integer,String> enums = new HashMap<>();
-						for (Element en : children) {
-							enums.put(en.getAttributeValue("name").hashCode(), en.getAttributeValue("value"));
-						}
-						mEnumRes.put(attrName.hashCode(), enums);
-					}
-				} 
-//				pairList.add(new Pair<String, String>(declareName, attrName));
-				String name = new StringBuilder(declareName).append("_").append(attrName).toString();
-				write(makePublicStaticInt(name, attrName.hashCode()));
-//				++mStartIndex;
-			}
+			File values = new File(mAbsoluteResBasePath + valuesPath);
+			valuesPathList = Arrays.asList(values.list());
 		}
 		
-		bi.close();
-		in.close();
-//		
-		write(endClass());
+		for (String path : valuesPathList) {
+			if (isJar()) {
+			    in = mClassBuildConfig.getResourceAsStream(path);
+			} else {
+				if (!path.endsWith(".xml")) {
+					continue;
+				} else {
+					in = new BufferedInputStream(new FileInputStream(mAbsoluteResBasePath + valuesPath + path));
+				}
+			}
+			
+			if (in != null) {
+				BufferedInputStream bi = new BufferedInputStream(in);
+				SAXBuilder builder = new SAXBuilder();
+				Document doc = builder.build(bi);
+				Element root = doc.getRootElement();
+				if (!TAG_RESOURCES.equals(root.getName())) {
+					logWrongFormat();
+					continue;
+				}
+				List<Element> elements = (List<Element>) root.getChildren();
+				for (Element element : elements) {
+					String eName = element.getName();
+					String name = element.getAttributeValue("name");
+					String value = element.getValue();
+					//
+					ResourceInfo resInfo = new ResourceInfo();
+					resInfo.name = name;
+					resInfo.index = mStartIndex;
+					resInfo.value = value;
+					resInfo.type = eName;
+					//
+					if (TAG_STRING.equals(eName)) { 
+						mStringRes.add(resInfo);
+//							mResources.addStringValue(mStartIndex, value);
+					} else if (TAG_INTEGER.equals(eName)) {
+						mIntegerRes.add(resInfo);
+//							mResources.addIntegerValue(mStartIndex, Integer.parseInt(value));
+					} else if (TAG_BOOL.equals(eName)) {
+						mBoolRes.add(resInfo);
+//							mResources.addBooleanValue(mStartIndex, Boolean.parseBoolean(value));
+					} else if (TAG_COLOR.equals(eName)) {
+						mColorRes.add(resInfo);
+//							mResources.addColorValue(mStartIndex, Color.parseColor(value));
+					} else if (TAG_DIMEN.equals(eName)) {
+						resInfo.value = DimensionUtils.toPixel(value);
+						mDimenRes.add(resInfo);
+					} else if (TAG_DECLARE_STYLEABLE.equals(eName)) {
+						resInfo = null;
+						mDeclareStyleableRes.add(processDeclareStyleable(element));
+					} else if (TAG_STYLE.equals(eName)) {
+						resInfo = null;
+						mStyleRes.add(processStyle(element));
+					}
+					
+					++mStartIndex;
+				}
+				bi.close();
+				in.close();
+		    }
+		}
+		// process style parent 
+		for (StyleResource styleRes : mStyleRes) {
+			if (styleRes.parentName != null) {
+				for (StyleResource res : mStyleRes) {
+					if (res.name.equals(styleRes.parentName)) {
+						for (Pair<String, String> pair : res.items.values()) {
+							Pair<String, String> attrInfo = styleRes.items.get(pair.first);
+							if (attrInfo == null) {
+								styleRes.items.put(pair.first, pair);
+							}
+						}
+					}
+				}
+			}
+		}
+		// writeRClass
+		makeR();
+	}
+	
+	private StyleResource processStyle(Element element) {
+		StyleResource styleRes = new StyleResource(); 
+		String styleName = element.getAttributeValue("name");
+		String parentName = element.getAttributeValue("parent");
+		
+		if (styleName.contains(".")) {
+			styleName = styleName.replace(".", "_");
+		}
+		
+		styleRes.name = styleName;
+		styleRes.parentName = parentName;
+		 
+		for (Element item : (List<Element>) element.getChildren()) {
+			String itemName = null;
+			String packageName = mPackageName;
+			String[] names = item.getAttributeValue("name").split(":");
+			if (names.length >= 2) {
+				packageName = mCorePackageName;
+				itemName = names[1];
+			} else {
+				packageName = mPackageName;
+				itemName = names[0];
+			}
+			String attrName = new StringBuilder(packageName).append(".R.attr.").append(itemName).toString();
+			styleRes.items.put(attrName, new Pair<String, String>(attrName, item.getValue()));
+		}
+		
+		return styleRes;
+	}
+	
+	/**
+	 * attrs
+	 */
+	private StyleResource processDeclareStyleable(Element element) {
+		StyleResource attrRes = new StyleResource();
+		List<Element> children = (List<Element>) element.getChildren();
+		String declareName = element.getAttributeValue("name");
+		String value = String.valueOf(children.size());
+		attrRes.name = declareName;
+		attrRes.value = value;
+		
+		for (Element child : children) {
+			if (!TAG_ATTR.equals(child.getName())) logWrongFormat();
+			String attrName = child.getAttributeValue("name");
+			String attrFormat = child.getAttributeValue("format");
+			if (attrFormat == null) {
+				List<Element> enumList = (List<Element>) child.getChildren();
+				if (enumList.size() > 0) {
+					HashMap<Integer,String> enums = new HashMap<>();
+					for (Element en : enumList) {
+						enums.put(en.getAttributeValue("name").hashCode(), en.getAttributeValue("value"));
+					}
+					mEnumRes.put(attrName.hashCode(), enums);
+				}
+			} 
+			String name = new StringBuilder(declareName).append("_").append(attrName).toString();
+			attrRes.items.put(name, new Pair<String, String>(name, String.valueOf(attrName.hashCode())));
+			AttrInfo attrInfo = new AttrInfo();
+			attrInfo.fullName = name;
+			attrInfo.attrName = attrName;
+			attrInfo.format = attrFormat;
+			mAttrNameMap.put(name, attrInfo);
+		}
+		
+		return attrRes;
 	}
 	
 	private void parseAnimByDOM() throws Exception {
@@ -466,7 +488,7 @@ public abstract class RBase {
 							checkId(root);
 						} catch (Exception e) {
 							Log.e(TAG, "file : " + fullPath + " is wrong format.");
-							// e.printStackTrace();
+							e.printStackTrace();
 						}
 						
 						bi.close();
@@ -688,217 +710,34 @@ public abstract class RBase {
 		void processFile(String path, String pathWithoutEx) throws IOException;
 	}
 	
-	//****************************************************************************************
-	// new ver
-	//****************************************************************************************
-	private List<ResourceInfo> mStringRes = new ArrayList<ResourceInfo>();
-	private List<ResourceInfo> mIntegerRes = new ArrayList<ResourceInfo>();
-	private List<ResourceInfo> mBoolRes = new ArrayList<ResourceInfo>();
-	private List<ResourceInfo> mColorRes = new ArrayList<ResourceInfo>();
-	private List<ResourceInfo> mDimenRes = new ArrayList<ResourceInfo>();
-	private List<StyleResource> mAttrRes = new ArrayList<StyleResource>();
-	private List<StyleResource> mDeclareStyleableRes = new ArrayList<StyleResource>();
-	private List<StyleResource> mStyleRes = new ArrayList<StyleResource>();
-	
-	private static HashMap<String, AttrInfo> mAttrNameMap = new HashMap<String, AttrInfo>();
-	
-	/**
-	 * parse all xml values and set resource container
-	 * @throws Exception
-	 */
-	@SuppressWarnings("unchecked")
-	private void parseAllValuesByDOM() throws Exception {
-		String valuesPath = "/res/values/";
-		InputStream in = null;
-		List<String> valuesPathList = null;
-		
-		if (isJar()) {
-			valuesPathList = Lists.newArrayList();
-		    for (String path : mPathList) {
-		    	if (path.contains(valuesPath)) {
-		    		valuesPathList.add(path);
-		    	}
-			}
-		} else {
-			File values = new File(mAbsoluteResBasePath + valuesPath);
-			valuesPathList = Arrays.asList(values.list());
-		}
-		
-		for (String path : valuesPathList) {
-			if (isJar()) {
-			    in = mClassBuildConfig.getResourceAsStream(path);
-			} else {
-				if (!path.endsWith(".xml")) {
-					continue;
-				} else {
-					in = new BufferedInputStream(new FileInputStream(mAbsoluteResBasePath + valuesPath + path));
-				}
-			}
-			
-			if (in != null) {
-				BufferedInputStream bi = new BufferedInputStream(in);
-				SAXBuilder builder = new SAXBuilder();
-				Document doc = builder.build(bi);
-				Element root = doc.getRootElement();
-				if (!TAG_RESOURCES.equals(root.getName())) {
-					logWrongFormat();
-					continue;
-				}
-				List<Element> elements = (List<Element>) root.getChildren();
-				for (Element element : elements) {
-					String eName = element.getName();
-					String name = element.getAttributeValue("name");
-					String value = element.getValue();
-					//
-					ResourceInfo resInfo = new ResourceInfo();
-					resInfo.name = name;
-					resInfo.index = mStartIndex;
-					resInfo.value = value;
-					resInfo.type = eName;
-					//
-					if (TAG_STRING.equals(eName)) { 
-						mStringRes.add(resInfo);
-//						mResources.addStringValue(mStartIndex, value);
-					} else if (TAG_INTEGER.equals(eName)) {
-						mIntegerRes.add(resInfo);
-//						mResources.addIntegerValue(mStartIndex, Integer.parseInt(value));
-					} else if (TAG_BOOL.equals(eName)) {
-						mBoolRes.add(resInfo);
-//						mResources.addBooleanValue(mStartIndex, Boolean.parseBoolean(value));
-					} else if (TAG_COLOR.equals(eName)) {
-						mColorRes.add(resInfo);
-//						mResources.addColorValue(mStartIndex, Color.parseColor(value));
-					} else if (TAG_DIMEN.equals(eName)) {
-						resInfo.value = DimensionUtils.toPixel(value);
-						mDimenRes.add(resInfo);
-					} else if (TAG_DECLARE_STYLEABLE.equals(eName)) {
-						resInfo = null;
-						mDeclareStyleableRes.add(processDeclareStyleable(element));
-					} else if (TAG_STYLE.equals(eName)) {
-						resInfo = null;
-						mStyleRes.add(processStyle(element));
-					}
-					
-					++mStartIndex;
-				}
-				bi.close();
-				in.close();
-		    }
-		}
-		// process style parent 
-		for (StyleResource styleRes : mStyleRes) {
-			if (styleRes.parentName != null) {
-				for (StyleResource res : mStyleRes) {
-					if (res.name.equals(styleRes.parentName)) {
-						for (Pair<String, String> pair : res.items.values()) {
-							Pair<String, String> attrInfo = styleRes.items.get(pair.first);
-							if (attrInfo == null) {
-								styleRes.items.put(pair.first, pair);
-							}
-						}
-					}
-				}
-			}
-		}
-		// writeRClass
-		makeR();
-	}
-	
-	private StyleResource processStyle(Element element) {
-		StyleResource styleRes = new StyleResource(); 
-		String styleName = element.getAttributeValue("name");
-		String parentName = element.getAttributeValue("parent");
-		
-		if (styleName.contains(".")) {
-			styleName = styleName.replace(".", "_");
-		}
-		
-		styleRes.name = styleName;
-		styleRes.parentName = parentName;
-		 
-		for (Element item : (List<Element>) element.getChildren()) {
-			String itemName = null;
-			String packageName = mPackageName;
-			String[] names = item.getAttributeValue("name").split(":");
-			if (names.length >= 2) {
-				packageName = mCorePackageName;
-				itemName = names[1];
-			} else {
-				packageName = mPackageName;
-				itemName = names[0];
-			}
-			String attrName = new StringBuilder(packageName).append(".R.attr.").append(itemName).toString();
-			styleRes.items.put(attrName, new Pair<String, String>(attrName, item.getValue()));
-		}
-		
-		return styleRes;
-	}
-	
-	/**
-	 * attrs
-	 */
-	private StyleResource processDeclareStyleable(Element element) {
-		StyleResource attrRes = new StyleResource();
-		List<Element> children = (List<Element>) element.getChildren();
-		String declareName = element.getAttributeValue("name");
-		String value = String.valueOf(children.size());
-		attrRes.name = declareName;
-		attrRes.value = value;
-		
-		for (Element child : children) {
-			if (!TAG_ATTR.equals(child.getName())) logWrongFormat();
-			String attrName = child.getAttributeValue("name");
-			String attrFormat = child.getAttributeValue("format");
-			if (attrFormat == null) {
-				List<Element> enumList = (List<Element>) child.getChildren();
-				if (enumList.size() > 0) {
-					HashMap<Integer,String> enums = new HashMap<>();
-					for (Element en : enumList) {
-						enums.put(en.getAttributeValue("name").hashCode(), en.getAttributeValue("value"));
-					}
-					mEnumRes.put(attrName.hashCode(), enums);
-				}
-			} 
-			String name = new StringBuilder(declareName).append("_").append(attrName).toString();
-			attrRes.items.put(name, new Pair<String, String>(name, String.valueOf(attrName.hashCode())));
-			AttrInfo attrInfo = new AttrInfo();
-			attrInfo.fullName = name;
-			attrInfo.attrName = attrName;
-			attrInfo.format = attrFormat;
-			mAttrNameMap.put(name, attrInfo);
-		}
-		
-		return attrRes;
-	}
-	
 	/**
 	 * In previous, we put the resource value in resource container object. 
 	 * Now, make R.java through resource value info 
 	 * @throws IOException
 	 */
 	private void makeR() throws IOException {
-//		mStringRes
+		// mStringRes
 		makeType1(mStringRes, "string");
-//		mIntegerRes
+		// mIntegerRes
 		makeType1(mIntegerRes, "integer");
-//		mDimenRes
+		// mDimenRes
 		makeType1(mDimenRes, "dimen");
-//		mBoolRes
+		// mBoolRes
 		makeType1(mBoolRes, "bool");
-//		mColorRes
+		// mColorRes
 		makeType1(mColorRes, "color");
-//		mDeclareStyleableRes
+		// mDeclareStyleableRes
 		makeStyleableResource(mStyleRes, "style");
-//		mAttrRes
+		// mAttrRes
 		makeAttrResource(mDeclareStyleableRes, "attr");
 	}
 	
 	private void makeType1(List<ResourceInfo> resInfoList, String which) throws IOException {
 		write(makePublicStaticFinalClass(which));
-		//
+		
 		for (ResourceInfo resInfo : resInfoList) {
 			write(makePublicStaticInt(resInfo.name, resInfo.index));
-			//
+			
 			if (resInfo.value.startsWith("@")) {
 				String valueName = resInfo.value.split("/")[1];
 				for (ResourceInfo info : resInfoList) {
@@ -920,12 +759,12 @@ public abstract class RBase {
 			} else if (TAG_DIMEN.equals(which)) {
 				mResources.addDimensionValue(resInfo.index, Integer.parseInt(resInfo.value));
 			} else if (TAG_DECLARE_STYLEABLE.equals(which)) {
-//						mDeclareStyleableRes.add(processDeclareStyleable(element));
+				// mDeclareStyleableRes.add(processDeclareStyleable(element));
 			} else if (TAG_STYLE.equals(which)) {
-//						mStyleRes.add(processStyle(element));
+				// mStyleRes.add(processStyle(element));
 			}
 		}
-		//
+		
 		write(endClass());
 	}
 
