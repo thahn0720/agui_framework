@@ -18,7 +18,7 @@ public class Toast {
      * could be user-definable.
      * @see #setDuration
      */
-    public static final int 											LENGTH_LONG 		= 200;
+    public static final int 											LENGTH_LONG 		= 2000;
 	
 	private Context 													mContext;
 	private View														mView;		

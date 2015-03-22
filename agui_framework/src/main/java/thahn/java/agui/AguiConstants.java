@@ -20,6 +20,7 @@ public class AguiConstants {
 	
 	public static final String											JAR_KEYWORD				= ".jar";
 	public static final String											XML_EXTENSION			= ".xml";
+	public static final String											AGUI_EXTENSION			= ".agui";
 	
 	public static final int												NOT_YET					= -1;
 }

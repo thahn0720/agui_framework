@@ -162,6 +162,7 @@ public class Service extends ContextWrapper {
 	@Override
 	/*package*/ void addManagedDialog(Dialog dialog, Bundle bundle) {
 		// TODO : create & start thread
+		dialog.dispatchOnCreate(bundle);
 		WindowDialog wDialog = new WindowDialog(dialog);
 		ManagedDialog managed = new ManagedDialog();
 		managed.dialog = wDialog;

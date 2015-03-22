@@ -9,6 +9,7 @@ import thahn.java.agui.app.Context;
 import thahn.java.agui.app.Dialog;
 import thahn.java.agui.app.Service;
 import thahn.java.agui.controller.R;
+import thahn.java.agui.controller.install.InstallAppDialog;
 import thahn.java.agui.utils.Log;
 import thahn.java.agui.view.View;
 import thahn.java.agui.view.View.OnClickListener;
@@ -92,22 +93,7 @@ public class TrayMenuManager {
 			return dialog;
 		}
 		case DIALOG_INSTALL_APP:{
-			Dialog dialog = new Dialog(mService.getApplicationContext());
-			dialog.setContentView(R.layout.dialog_install_app);
-			dialog.findViewById(R.id.btn_browse).setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					Log.i("browse");
-				}
-			});
-			dialog.findViewById(R.id.btn_install).setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					Log.i("install");
-				}
-			});
+			InstallAppDialog dialog = new InstallAppDialog(mService.getApplicationContext());
 			return dialog;
 		}
 		}

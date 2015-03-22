@@ -38,7 +38,7 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 	public ApplicationController() {
 		super();
 		// FIXME : hardcoding
-		String temp = "D:/agui-sdk-windows";//System.getenv(AguiConstants.ENV_AGUI_HOME);
+		String temp = System.getenv(AguiConstants.ENV_AGUI_HOME); // "D:/agui-sdk-windows";//
 		if (Strings.isNullOrEmpty(temp)) {
 			throw new NotExistException("Env Variable : AGUI_HOME is not defined. " +
 					"before executing agui app, AGUI_HOME should be defined like ANDROID_HOME." +

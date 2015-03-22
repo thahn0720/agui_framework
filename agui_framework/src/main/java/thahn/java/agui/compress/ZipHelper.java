@@ -2,9 +2,12 @@ package thahn.java.agui.compress;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class ZipHelper {
@@ -57,5 +60,25 @@ public class ZipHelper {
 				}
 			}
 		}
+	}
+	
+	public void extract(String filePath, String outputPath) throws IOException {
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(filePath));
+        ZipEntry ze = zis.getNextEntry();
+        while (ze != null){
+            String entryName = ze.getName();
+            File outputFile = Paths.get(outputPath, entryName).toFile();
+            outputFile.getParentFile().mkdirs();
+            FileOutputStream fos = new FileOutputStream(outputFile);
+            int len;
+            byte buffer[] = new byte[1024];
+            while ((len = zis.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+            }
+            fos.close();   
+            ze = zis.getNextEntry();
+        }
+        zis.closeEntry();
+        zis.close();
 	}
 }

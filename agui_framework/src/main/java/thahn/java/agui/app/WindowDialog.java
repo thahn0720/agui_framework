@@ -24,7 +24,6 @@ public class WindowDialog extends Dialog implements DialogInterface {
 	private JFrame														mFrame;
 	private MyPanel														mPanel;
 	private	InputController												mInputController;
-	// ActivityInputController
 
 	public WindowDialog(Context context) {
 		super(context);
@@ -58,8 +57,10 @@ public class WindowDialog extends Dialog implements DialogInterface {
 		mBundle = dialog.mBundle;
 		mOnDismissListener = dialog.mOnDismissListener;
 		
-		replaceContext(mDialogView);
-		setView(mDialogView);
+		if (mDialogView != null) {
+			replaceContext(mDialogView);
+			setView(mDialogView);
+		}
 	}
 	
 	private void init() {
