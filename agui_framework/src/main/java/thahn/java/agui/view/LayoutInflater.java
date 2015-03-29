@@ -64,19 +64,10 @@ public class LayoutInflater {
 	}
 	
     public void setFactory2(Factory2 factory) {
-//        if (mFactorySet) {
-//            throw new IllegalStateException("A factory has already been set on this LayoutInflater");
-//        }
         if (factory == null) {
             throw new NullPointerException("Given factory can not be null");
         }
         mFactory2 = factory;
-//        mFactorySet = true;
-//        if (mFactory == null) {
-//            mFactory = mFactory2 = factory;
-//        } else {
-//            mFactory = new FactoryMerger(factory, factory, mFactory, mFactory2);
-//        }
     }
 
 //    /**

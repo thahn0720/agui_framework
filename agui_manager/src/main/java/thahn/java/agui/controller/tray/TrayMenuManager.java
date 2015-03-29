@@ -14,6 +14,11 @@ import thahn.java.agui.utils.Log;
 import thahn.java.agui.view.View;
 import thahn.java.agui.view.View.OnClickListener;
 
+/**
+ * 
+ * @author thAhn
+ *
+ */
 public class TrayMenuManager {
 
 	private static final String									MENU_SET_USER_INFOS		= 	"Set User Info";

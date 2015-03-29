@@ -2,7 +2,12 @@ package thahn.java.agui.controller.install;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -14,6 +19,8 @@ import thahn.java.agui.app.Dialog;
 import thahn.java.agui.app.Toast;
 import thahn.java.agui.compress.ZipHelper;
 import thahn.java.agui.controller.R;
+import thahn.java.agui.res.ManifestParser;
+import thahn.java.agui.res.ManifestParser.ManifestInfo;
 import thahn.java.agui.swt.SwtHelper;
 import thahn.java.agui.view.View;
 import thahn.java.agui.widget.EditText;
@@ -70,16 +77,35 @@ public class InstallAppDialog extends Dialog {
 			case R.id.btn_install:
 				String aguiHome = System.getenv(AguiConstants.ENV_AGUI_HOME);
 				if (aguiHome != null) {
-//					get package and make package folder then extract
-					String outputPath = Paths.get(aguiHome, AguiConstants.PATH_DATA).toFile().getAbsolutePath();  
-					ZipHelper zipHelper = new ZipHelper();
+					// get package and make package folder then extract
 					try {
-						zipHelper.extract(mInstallAppFile.getAbsolutePath(), outputPath);
+						ZipFile aguiFile = new ZipFile(mInstallAppFile);
+						Enumeration<? extends ZipEntry> entries = aguiFile.entries();
+						while (entries.hasMoreElements()) {
+							ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+							if (AguiConstants.AGUI_MANIFEST_NAME.equals(zipEntry.getName())) {
+								InputStream is = aguiFile.getInputStream(zipEntry);
+								ManifestParser mfParser = new ManifestParser(null);
+								mfParser.parseHeader(is);
+								ManifestInfo manifestInfo = mfParser.getManifestInfo();
+								
+								String outputPath = Paths.get(aguiHome, AguiConstants.PATH_DATA, manifestInfo.packageName)
+										.toFile().getAbsolutePath();  
+								new File(outputPath).mkdirs();
+								ZipHelper zipHelper = new ZipHelper();
+								zipHelper.extract(mInstallAppFile.getAbsolutePath(), outputPath);
+								// FIXME : show success dialog
+								break;
+							}
+						}
+						// FIXME : error : show dialog : msg -> AguiManifest.xml does not exist
+					} catch (ZipException e) {
+						e.printStackTrace();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				} else {
-					// FIXME : error : show dialog
+					// FIXME : error : show dialog : msg -> invalid
 				}
 				break;
 			}

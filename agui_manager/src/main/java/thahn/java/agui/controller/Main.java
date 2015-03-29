@@ -22,8 +22,7 @@ public class Main {
     	
 		try {
 			String projectPath = System.getProperty("user.dir");
-			Class<?> mainCls = MyUtils.getClass(projectPath+"/bin/", "thahn.java.agui.app.ApplicationController");
-			ApplicationController cont = (ApplicationController) mainCls.newInstance();
+			ApplicationController cont = new ApplicationController();
 			cont.create(projectPath, 
 					"thahn.java.agui.controller",
 					"thahn.java.agui.controller."+

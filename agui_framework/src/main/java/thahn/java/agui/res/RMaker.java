@@ -3,6 +3,7 @@ package thahn.java.agui.res;
 import thahn.java.agui.Global;
 
 /**
+ * ex) <br>
  * public class R { <br>
 	   public static final class drawable { <br>
 	        public static final int ic_launcher=0x7f020000; <br>

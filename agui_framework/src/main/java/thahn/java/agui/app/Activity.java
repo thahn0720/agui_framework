@@ -25,9 +25,13 @@ import thahn.java.agui.view.View;
 import thahn.java.agui.view.View.OnCreateContextMenuListener;
 import thahn.java.agui.view.ViewGroup;
 
+/**
+ * 
+ * @author thAhn
+ *
+ */
 @SuppressWarnings("serial")
 public class Activity extends ContextThemeWrapper implements LayoutInflater.Factory2, OnCreateContextMenuListener {
-															//, DropTargetListener {
 
 	public static final String													TAG				 	= "Activity";
 	

@@ -48,8 +48,8 @@ public class AguiController {
 	    	
 	    	// Create an RMI connector and start it
 	    	// FIXME : seperate window into linux.
-	    	Runtime.getRuntime().exec("cmd /c rmiregistry "+JmxGlobal.MBEAN_SERVER_PORT);
-	    	JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:"+JmxGlobal.MBEAN_SERVER_PORT+"/server");
+	    	Runtime.getRuntime().exec("cmd /c rmiregistry " + JmxGlobal.MBEAN_SERVER_PORT);
+	    	JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:" + JmxGlobal.MBEAN_SERVER_PORT + "/server");
 	       	mCs = JMXConnectorServerFactory.newJMXConnectorServer(url, null, mbs);
 	       	Log.i("Lock");
 	       	if (AguiUtils.isRunnable()) {

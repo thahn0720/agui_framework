@@ -30,14 +30,13 @@ import com.google.common.base.Strings;
  */
 public class ApplicationController extends ContextThemeWrapper implements Window.Callback {
 	
-	private static final long serialVersionUID = -9172835460659506867L;
+	private static final long		serialVersionUID	= -9172835460659506867L;
 	
-	private ThreadLocal<Integer>											mCurWinWidth	 = new ThreadLocal<Integer>();
-	private ThreadLocal<Integer>											mCurWinHeight	 = new ThreadLocal<Integer>();
+	private ThreadLocal<Integer>	mCurWinWidth		= new ThreadLocal<Integer>();
+	private ThreadLocal<Integer>	mCurWinHeight		= new ThreadLocal<Integer>();
 	
 	public ApplicationController() {
 		super();
-		// FIXME : hardcoding
 		String temp = System.getenv(AguiConstants.ENV_AGUI_HOME); // "D:/agui-sdk-windows";//
 		if (Strings.isNullOrEmpty(temp)) {
 			throw new NotExistException("Env Variable : AGUI_HOME is not defined. " +
@@ -60,7 +59,7 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 	 */
 	public void create(String projectPath, String projectPackageName, String fullPackageName) {
 		try {
-			init(projectPath, projectPackageName);
+			init(projectPath, projectPackageName, fullPackageName);
 			ActivityInfo info = ActivityManager.getInstance().getActivityInfo(fullPackageName); //ApplicationSetting.applicationInfo.width
 			Intent intent = new Intent(null, MyUtils.getClass(projectPath, fullPackageName));
 			intent.putIntExtra(Intent.EXTRA_POSITION_RELATIVE_SCREEN, WindowPosition.CENTER | WindowPosition.MID);
@@ -71,48 +70,38 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 		}
 	}
 	
-	private void init(String projectPath, String projectPackageName) {
+	private void init(String projectPath, String projectPackageName, String fullPackageName) throws ClassNotFoundException {
 		// init resources
 		ResourcesManager.getInstance();
 		// init global constants
 		Global.init();
 		Global.corePath = MyUtils.getClassPath(thahn.java.agui.Main.class);
-		Global.coreResBasePath = Global.corePath;
-		String[] ends = new String[]{BuildTool.DEFAULT.getBinPath(), BuildTool.MAVEN.getBinPath()}; // ant, maven
-		for (String end : ends) {
-			if (Global.corePath.endsWith(end)) {
-				Global.corePath = Global.corePath.substring(0, Global.corePath.length() - end.length());
-				
-				if (BuildTool.DEFAULT.getBinPath().equals(end)) {
-					Global.coreResBasePath = Global.corePath;
-					Global.buildTool = BuildTool.DEFAULT;
-				} else if (BuildTool.MAVEN.getBinPath().equals(end)) {
-					Global.coreResBasePath = Global.corePath + "/src/main/resources";
-					Global.buildTool = BuildTool.MAVEN;
-				}
-			}
-		}
+		Object[] pathNbuildTool = BuildTool.getBuildToolByClasspath(Global.corePath);
+		Global.corePath = (String) pathNbuildTool[0];
+		Global.coreBuildTool = (BuildTool) pathNbuildTool[1];
+		Global.coreResBasePath = Paths.get(Global.corePath, Global.coreBuildTool.getResPath()).toString();
+		
 		Global.projectPath = projectPath;
-		Global.projectResBasePath = Global.projectPath;
-		if (Global.buildTool == BuildTool.MAVEN) {
-			Global.projectResBasePath = Paths.get(Global.projectResBasePath, BuildTool.MAVEN.getResPath()).toFile().getAbsolutePath();
-		}
+		Object[] projectNbuildTool = BuildTool.getBuildTool(Global.projectPath);
+		Global.projectPath = (String) projectNbuildTool[0];
+		Global.projectBuildTool = (BuildTool) projectNbuildTool[1];
+		Global.projectResBasePath = Paths.get(Global.projectPath, Global.projectBuildTool.getResPath()).toString();
 		Global.corePackageName = thahn.java.agui.Main.class.getPackage().getName();
 		Global.projectPackageName = projectPackageName;
 		// core res path		
-		Global.coreDrawableImgPath = Global.coreResBasePath + "/res/drawable-hdpi/";
-		Global.coreDrawablePath = Global.coreResBasePath + "/res/drawable/";
-		Global.coreLayoutPath = Global.coreResBasePath + "/res/layout/"; 
-		Global.coreValuesPath = Global.coreResBasePath + "/res/values/";
+		Global.coreDrawableImgPath = Paths.get(Global.coreResBasePath, "/res/drawable-hdpi/").toString();
+		Global.coreDrawablePath = Paths.get(Global.coreResBasePath, "/res/drawable/").toString();
+		Global.coreLayoutPath = Paths.get(Global.coreResBasePath, "/res/layout/").toString(); 
+		Global.coreValuesPath = Paths.get(Global.coreResBasePath, "/res/values/").toString();
 		Global.coreGenBasePath = Global.corePath;
 		// project res path		
-		Global.projectDrawableImgPath = Global.projectResBasePath + "/res/drawable-hdpi/";
-		Global.projectDrawablePath = Global.projectResBasePath + "/res/drawable/";
-		Global.projectLayoutPath = Global.projectResBasePath + "/res/layout/"; 
-		Global.projectValuesPath = Global.projectResBasePath + "/res/values/";
+		Global.projectDrawableImgPath = Paths.get(Global.projectResBasePath, "/res/drawable-hdpi/").toString();
+		Global.projectDrawablePath = Paths.get(Global.projectResBasePath, "/res/drawable/").toString();
+		Global.projectLayoutPath = Paths.get(Global.projectResBasePath, "/res/layout/").toString(); 
+		Global.projectValuesPath = Paths.get(Global.projectResBasePath, "/res/values/").toString();
 		Global.projectGenBasePath = Global.projectPath;
 		// agui project path
-		Global.aguiProjectPath = Global.aguiHomePath + AguiConstants.DIR_SEPERATOR + Global.projectPackageName + AguiConstants.DIR_SEPERATOR;
+		Global.aguiProjectPath = Paths.get(Global.aguiHomePath, Global.projectPackageName, AguiConstants.DIR_SEPERATOR).toString();
 		File projectFolder = new File(Global.aguiProjectPath);
 		if (!projectFolder.exists()) projectFolder.mkdirs();
 		
@@ -143,7 +132,7 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 			JmxConnectorHelper.getInstance().registerApplicationInAgui(this, ApplicationSetting.applicationInfo);
 		}
 	}
-
+	
 	public void createWindow(String title, int width, int height, Intent intent) throws Exception {
 		Log.i("created window : " + intent.getComponent().getClassName());
 		mCurWinWidth.set(width);

@@ -68,14 +68,17 @@ public class ZipHelper {
         while (ze != null){
             String entryName = ze.getName();
             File outputFile = Paths.get(outputPath, entryName).toFile();
-            outputFile.getParentFile().mkdirs();
-            FileOutputStream fos = new FileOutputStream(outputFile);
-            int len;
-            byte buffer[] = new byte[1024];
-            while ((len = zis.read(buffer)) > 0) {
-                fos.write(buffer, 0, len);
+            if (ze.isDirectory()) {
+            	outputFile.mkdirs();
+            } else {
+	            FileOutputStream fos = new FileOutputStream(outputFile);
+	            int len;
+	            byte buffer[] = new byte[1024];
+	            while ((len = zis.read(buffer)) > 0) {
+	                fos.write(buffer, 0, len);
+	            }
+	            fos.close();   
             }
-            fos.close();   
             ze = zis.getNextEntry();
         }
         zis.closeEntry();

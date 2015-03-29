@@ -17,40 +17,40 @@ import thahn.java.agui.Global;
 import thahn.java.agui.res.ResourcesManager;
 
 /**
- * 
+ * Resource Utils
  * @author thAhn
  *
  */
 public class MyUtils {
 	
-	public static String[] newStringArray(Object... values) {
-		List<String> ret = new ArrayList<>();
-		for (Object value : values) {
-			if (value instanceof Object[]) {
-				Object[] objs = (Object[]) value;
-				for (Object obj : objs) {
-					ret.add((String) obj);
-				}
-			} else {
-				ret.add((String) value);
-			}
-		}
-		return ret.toArray(new String[ret.size()]);
-	}
-	
-	public static int booleanToInt(boolean is) {
-		return is?1:0;
-	}
-	
 	public static boolean isCoreNS(String name) {
 		boolean ret = false;
-		if(name.startsWith("@")) {
+		if (name.startsWith("@")) {
 			String[] temp = name.substring(1).split("/");
-			if(temp[0].contains(Global.AGUI_NAMESPACE)) {
+			if (temp[0].contains(Global.AGUI_NAMESPACE)) {
 				ret = true;
 			}
 		} 
 		return ret;
+	}
+	
+	/**
+	 * 
+	 * @param classPath full path based on full package name
+	 * @return
+	 */
+	public static Class<?> getClass(String path, String fullPacakgeName) throws Exception {
+		String classpath = path;
+		if (Global.corePath.equals(path)) {
+			classpath = Global.corePath + Global.coreBuildTool.getBinPath();
+		} else if (Global.projectPath.equals(path)) {
+			classpath = Global.projectPath + Global.projectBuildTool.getBinPath();
+		}
+		URL classUrl = new File(classpath).toURL();
+		URL[] classUrls = {classUrl};
+		// FIXME : modify this into singleton 
+		URLClassLoader ucl = new URLClassLoader(classUrls);
+		return ucl.loadClass(fullPacakgeName);
 	}
 	
 	/**
@@ -60,13 +60,11 @@ public class MyUtils {
 	 * @return
 	 */
 	public static Class<?> getProjectClass(String classPath) throws MalformedURLException, ClassNotFoundException{
-		if(Global.projectPath != null) {
-			String path = Global.projectPath + BuildTool.DEFAULT.getBinPath();
-			if (Global.buildTool == BuildTool.MAVEN) {
-				path = Global.projectPath + BuildTool.MAVEN.getBinPath();
-			}
+		if (Global.projectPath != null) {
+			String path = Global.projectPath + Global.projectBuildTool.getBinPath();
 			URL classUrl = new File(path).toURL();
 			URL[] classUrls = {classUrl};
+			// FIXME : modify this into singleton
 			URLClassLoader ucl = new URLClassLoader(classUrls);
 			return ucl.loadClass(makeFullPackageName(classPath));
 		} 
@@ -75,26 +73,14 @@ public class MyUtils {
 	
 	public static String makeFullPackageName(String attrValue) {
 		StringBuilder builder = new StringBuilder();
-		if(attrValue.startsWith(".")) { // .activity
+		if (attrValue.startsWith(".")) { // .activity
 			builder.append(Global.projectPackageName).append(attrValue);
-		} else if(!attrValue.startsWith(Global.projectPackageName)) { // activity
+		} else if (!attrValue.startsWith(Global.projectPackageName)) { // activity
 			builder.append(Global.projectPackageName).append(".").append(attrValue);
 		} else {
 			builder.append(attrValue);
 		}
 		return builder.toString();
-	}
-	
-	/**
-	 * 
-	 * @param classPath full path based on full package name
-	 * @return
-	 */
-	public static Class<?> getClass(String path, String fullPacakgeName) throws Exception {
-		URL classUrl = new File(path+"/bin/").toURL();
-		URL[] classUrls = {classUrl};
-		URLClassLoader ucl = new URLClassLoader(classUrls);
-		return ucl.loadClass(fullPacakgeName);
 	}
 	
 	public static String getResourcePath(String which, Class<?> indicatorClass) {
@@ -144,8 +130,8 @@ public class MyUtils {
 	public static InputStream getResourceInputStream(String path) throws ClassNotFoundException, MalformedURLException, FileNotFoundException {
 		//new JarURLConnection() -> access this jar:file:c:/agui_sdk.jar!/res/values/strings.xml 
 		InputStream is = null;
-		if(path.contains(AguiConstants.JAR_KEYWORD)) {
-			if(path.contains(Global.corePath)) {
+		if (path.contains(AguiConstants.JAR_KEYWORD)) {
+			if (path.contains(Global.corePath)) {
 				is = Class.forName(Global.corePackageName+".BuildConfig").getResourceAsStream(path.substring(Global.corePath.length()));
 			} else {
 				is = MyUtils.getProjectClass(Global.projectPackageName+".BuildConfig").getResourceAsStream(path.substring(Global.projectPath.length()));

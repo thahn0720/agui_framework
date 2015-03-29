@@ -251,35 +251,7 @@ public class ResourcesContainer {
 	 */
 	public int getIdentifier(String id, String type, String packageName) {
 		// view1 
-		int ret = -1;
-//		HashMap<Integer, String> temp = null;
-//		if("drawable".equals(type)) {
-//			temp = mDrawable;
-//		} else if("id".equals(type)) {
-//			temp = mId;
-//		} else if("layout".equals(type)) {
-//			temp = mLayout;
-//		} else if("string".equals(type) || "color".equals(type)) {
-//			temp = mString;
-//		} else if("anim".equals(type)) {
-//			temp = mAnim;
-//		} 
-//		else if("bool".equals(type)) {
-//			temp = mBoolean;
-//		} else if("integer".equals(type)) {
-//			temp = mInteger;
-//		} else if("float".equals(type)) {
-//			temp = mFloat;
-//		}
-//		if(temp != null) {
-			ret = GenParser.getInstance().find(id, packageName, type);
-//			for(Entry<Integer, String> entry : temp.entrySet()) {
-//				if(entry.getValue().equals(id)) {
-//					ret = entry.getKey();
-//					break;
-//				}
-//			}
-//		}
+		int ret = GenParser.getInstance().find(id, packageName, type);
 		return ret;
 	}
 	

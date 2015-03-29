@@ -88,9 +88,9 @@ public abstract class RBase {
 			File dirs = null;
 			
 			if (mAbsoluteGenBasePath.equals(mCorePath)) {
-				mClassBuildConfig = Class.forName(mPackageName+".BuildConfig");
+				mClassBuildConfig = Class.forName(mPackageName + ".BuildConfig");
 			} else {
-				mClassBuildConfig = MyUtils.getProjectClass(mPackageName+".BuildConfig");
+				mClassBuildConfig = MyUtils.getProjectClass(mPackageName + ".BuildConfig");
 			}
 			
 			if (isJar()) {

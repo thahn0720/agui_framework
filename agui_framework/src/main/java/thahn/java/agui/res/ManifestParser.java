@@ -3,6 +3,8 @@ package thahn.java.agui.res;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.List;
@@ -52,11 +54,29 @@ public class ManifestParser {
 		mManifestInfo = new ManifestInfo();
 	}
 	
+	/**
+	 * 
+	 * @param projectPath project directory
+	 */
 	public void parse(String projectPath) {
 		try {
 			File xmlFile = Paths.get(projectPath, AguiConstants.AGUI_MANIFEST_NAME).toFile();
-			FileInputStream in = new FileInputStream(xmlFile);
-			BufferedInputStream bi = new BufferedInputStream(in);
+			parse(new FileInputStream(xmlFile));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void parse(InputStream is) {
+		parse(is, false);
+	}
+	
+	public void parseHeader(InputStream is) {
+		parse(is, true);
+	}
+	
+	private void parse(InputStream is, boolean onlyHeader) {
+		try (BufferedInputStream bi = new BufferedInputStream(is)) {
 			SAXBuilder builder = new SAXBuilder();
 			Document doc = builder.build(bi);
 			Element root = doc.getRootElement();
@@ -65,23 +85,23 @@ public class ManifestParser {
 			mManifestInfo.versionCode = getAttributeValue(root, "versionCode");
 			mManifestInfo.versionName = getAttributeValue(root, "versionName");
 			
-			parseApplication(root.getChild("application"));
-			
-			bi.close();
-			in.close();
+			Element appElement = root.getChild("application");
+			parseHeader(appElement);
+			if (!onlyHeader) {
+				parseApplication(appElement);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	@SuppressWarnings("unchecked")
-	private void parseApplication(Element element) {
+
+	private void parseHeader(Element element) {
 		String appName = element.getAttributeValue("name");
 		String width = getAttributeValue(element, "width");
 		String height = getAttributeValue(element, "height");
 		mManifestInfo.width = width==null?ApplicationSetting.getDefaultWidth():Integer.parseInt(width);
 		mManifestInfo.height = height==null?ApplicationSetting.getDefaultHeight():Integer.parseInt(height);
-		//
+		
 		ApplicationInfo appInfo = new ApplicationInfo();
 		appInfo.id = UUID.randomUUID().toString();
 		appInfo.packageName = Global.projectPackageName;
@@ -90,7 +110,11 @@ public class ManifestParser {
 		appInfo.width = mManifestInfo.width;
 		appInfo.height = mManifestInfo.height;
 		ApplicationSetting.applicationInfo = appInfo;
-		//
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void parseApplication(Element element) {
+		// parse component
 		for (Element child : (List<Element>) element.getChildren()) {
 			String childName = child.getName();
 			if ("activity".equals(childName)) {

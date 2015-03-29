@@ -42,7 +42,8 @@ public class Global {
 	public static String											projectGenBasePath;
 	public static String											projectValuesPath;
 	
-	public static BuildTool											buildTool;
+	public static BuildTool											coreBuildTool;
+	public static BuildTool											projectBuildTool;
 
 	public static void init() {
 		Global.aguiSdkPath = System.getenv(ENV_AGUI_HOME);//"D:/agui-sdk-windows/";
