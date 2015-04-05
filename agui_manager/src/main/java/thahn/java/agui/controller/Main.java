@@ -23,10 +23,10 @@ public class Main {
 		try {
 			String projectPath = System.getProperty("user.dir");
 			ApplicationController cont = new ApplicationController();
-			cont.create(projectPath, 
-					"thahn.java.agui.controller",
-					"thahn.java.agui.controller."+
-					"IntroActivity"
+			cont.create(projectPath
+					, "thahn.java.agui.controller"
+//					, "thahn.java.agui.controller."+
+//					"IntroActivity"
 					);
 		} catch (Exception e) {
 			e.printStackTrace();

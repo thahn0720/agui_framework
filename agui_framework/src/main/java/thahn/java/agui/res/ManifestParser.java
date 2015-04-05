@@ -8,8 +8,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -20,7 +18,6 @@ import thahn.java.agui.AguiConstants;
 import thahn.java.agui.Global;
 import thahn.java.agui.app.ActivityInfo;
 import thahn.java.agui.app.ActivityManager;
-import thahn.java.agui.app.ApplicationInfo;
 import thahn.java.agui.app.ApplicationSetting;
 import thahn.java.agui.app.BroadcastReceiver;
 import thahn.java.agui.app.ComponentName;
@@ -86,7 +83,15 @@ public class ManifestParser {
 			mManifestInfo.versionName = getAttributeValue(root, "versionName");
 			
 			Element appElement = root.getChild("application");
-			parseHeader(appElement);
+			String appName = getAttributeValue(appElement, "name");
+			String appLabel = getAttributeValue(appElement, "label");
+			String width = getAttributeValue(appElement, "width");
+			String height = getAttributeValue(appElement, "height");
+			mManifestInfo.width = width==null?ApplicationSetting.getDefaultWidth():Integer.parseInt(width);
+			mManifestInfo.height = height==null?ApplicationSetting.getDefaultHeight():Integer.parseInt(height);
+			mManifestInfo.appName = appName;
+			mManifestInfo.appLabel = appLabel;
+			// get main activity
 			if (!onlyHeader) {
 				parseApplication(appElement);
 			}
@@ -95,23 +100,6 @@ public class ManifestParser {
 		}
 	}
 
-	private void parseHeader(Element element) {
-		String appName = element.getAttributeValue("name");
-		String width = getAttributeValue(element, "width");
-		String height = getAttributeValue(element, "height");
-		mManifestInfo.width = width==null?ApplicationSetting.getDefaultWidth():Integer.parseInt(width);
-		mManifestInfo.height = height==null?ApplicationSetting.getDefaultHeight():Integer.parseInt(height);
-		
-		ApplicationInfo appInfo = new ApplicationInfo();
-		appInfo.id = UUID.randomUUID().toString();
-		appInfo.packageName = Global.projectPackageName;
-		appInfo.path = Global.projectPackageName;
-		appInfo.mainActivity = mManifestInfo.mainActivity;
-		appInfo.width = mManifestInfo.width;
-		appInfo.height = mManifestInfo.height;
-		ApplicationSetting.applicationInfo = appInfo;
-	}
-	
 	@SuppressWarnings("unchecked")
 	private void parseApplication(Element element) {
 		// parse component
@@ -130,7 +118,6 @@ public class ManifestParser {
 	}
 	
 	private void parseActivity(Element child) {
-//		String prefix = Global.AGUI_NAMESPACE+":";
 		ActivityInfo info = new ActivityInfo();
 		info.width = mManifestInfo.width;
 		info.height = mManifestInfo.height;
@@ -192,8 +179,6 @@ public class ManifestParser {
 //							attrValue = mResources.getString(id);
 //						} 
 					} else {
-//						String packageName = Global.projectPackageName;
-//						StringBuilder builder = new StringBuilder();
 						if (attrName.equals("name")) {
 							attrValue = MyUtils.makeFullPackageName(attrValue);
 						}
@@ -212,17 +197,6 @@ public class ManifestParser {
 		}
 	}
 	
-//	<receiver android:name=".BroadcastReceiverTest"
-//            android:permission="com.google.android.c2dm.permission.SEND">
-//            <intent-filter>
-//                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-//                <category android:name="dksxogudsla.java.agui.test" />
-//            </intent-filter>
-//            <intent-filter>
-//                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-//                <category android:name="dksxogudsla.java.agui.test" />
-//            </intent-filter>
-//        </receiver>
 	private void parseReceiver(Element child) {
 		try {
 			String name = MyUtils.makeFullPackageName(getAttributeValue(child, "name"));
@@ -234,11 +208,6 @@ public class ManifestParser {
 		}
 	}
 	
-//	<intent-filter >ManagedComponent.ManagedComponent.
-//    <action android:name="android.intent.action.MAIN" />
-//    <category android:name="android.intent.category.LAUNCHER" />
-//	  <data >
-//  </intent-filter>
 	private void parseIntent(Element element, int which, String contextName, Object tag) {
 		for (Element a : (List<Element>) element.getChildren()) {
 			if ("intent-filter".equals(a.getName())) {
@@ -324,6 +293,8 @@ public class ManifestParser {
 	}
 	
 	public class ManifestInfo {
+		public String appName;
+		public String appLabel;
 		public String mainActivity;
 		public String packageName;
 		public String versionCode;

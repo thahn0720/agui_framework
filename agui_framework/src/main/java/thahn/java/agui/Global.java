@@ -14,6 +14,14 @@ public class Global {
 	public static final String										ENV_AGUI_HOME			= "AGUI_HOME";
 	public static final int											ROOT_ID					= -720;
 	
+	public static final String										WINDOWS 				= "Windows";
+	public static final String										LINUX 					= "Linux";
+	
+	public static OS												os;
+	public static String											osName;
+	public static String											osArch;
+	public static String											osVersion;
+	
 	public static String											aguiSdkPath;
 	
 	public static int												mTitlebarHeight;

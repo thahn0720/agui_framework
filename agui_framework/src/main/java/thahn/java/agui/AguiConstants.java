@@ -10,6 +10,7 @@ public class AguiConstants {
 	
 	public static final String											PATH_DATA				= "/os/data/";
 	public static final String											PATH_PLATFORMS			= "/platforms/";
+	public static final String											SDK_DIR_NAME_PREFIX		= "agui-";
 	
 	/** \agui-sdk-windows\platforms\agui-1\data */
 	public static final String											DATA_DIR_NAME			= "data";

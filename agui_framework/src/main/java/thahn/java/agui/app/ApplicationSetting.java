@@ -4,21 +4,21 @@ import java.io.Serializable;
 
 
 public class ApplicationSetting implements Serializable {
-	private static final long 												serialVersionUID = -4845987348964690878L;
+	private static final long			serialVersionUID		= -4845987348964690878L;
 	//
-	public static final int													SCROLL_AMOUNT 			= 3;
-	public static final int													WINDOW_WIDTH_PADDING 	= 7;
-	public static final int													WINDOW_HEIGHT_PADDING 	= 37;
+	public static final int				SCROLL_AMOUNT			= 3;
+	public static final int				WINDOW_WIDTH_PADDING	= 7;
+	public static final int				WINDOW_HEIGHT_PADDING	= 37;
 	//
-	public static ApplicationInfo											applicationInfo;
+	public static ApplicationInfo		applicationInfo			= new ApplicationInfo();
 	/** decide whether terminate service or not when application is finished  */
-	private boolean															forceServiceTerminate;
-	private boolean															autoResize;
-	private boolean															isDebug					= true;
-	
-	private int 															applicationFlags;
-	
-	private static ApplicationSetting										mApplicationSetting;
+	private boolean						forceServiceTerminate;
+	private boolean						autoResize;
+	private boolean						isDebug					= true;
+
+	private int							applicationFlags;
+
+	private static ApplicationSetting	mApplicationSetting;
 	
 	private ApplicationSetting() {
 		forceServiceTerminate = true;

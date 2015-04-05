@@ -20,7 +20,6 @@
         >
         <activity
             agui:name=".SetResultTestActivity"
-            
             agui:label="SetResultTestActivity"
             agui:width="300"
             agui:height="400"

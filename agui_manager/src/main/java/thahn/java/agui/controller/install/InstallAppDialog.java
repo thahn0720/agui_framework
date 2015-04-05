@@ -1,8 +1,12 @@
 package thahn.java.agui.controller.install;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -13,6 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 
 import thahn.java.agui.AguiConstants;
+import thahn.java.agui.Global;
 import thahn.java.agui.app.Bundle;
 import thahn.java.agui.app.Context;
 import thahn.java.agui.app.Dialog;
@@ -84,16 +89,29 @@ public class InstallAppDialog extends Dialog {
 						while (entries.hasMoreElements()) {
 							ZipEntry zipEntry = (ZipEntry) entries.nextElement();
 							if (AguiConstants.AGUI_MANIFEST_NAME.equals(zipEntry.getName())) {
+								// parse manifest
 								InputStream is = aguiFile.getInputStream(zipEntry);
 								ManifestParser mfParser = new ManifestParser(null);
 								mfParser.parseHeader(is);
 								ManifestInfo manifestInfo = mfParser.getManifestInfo();
-								
+								// extract
 								String outputPath = Paths.get(aguiHome, AguiConstants.PATH_DATA, manifestInfo.packageName)
 										.toFile().getAbsolutePath();  
 								new File(outputPath).mkdirs();
 								ZipHelper zipHelper = new ZipHelper();
 								zipHelper.extract(mInstallAppFile.getAbsolutePath(), outputPath);
+								// make exe in windows
+								String sdkAbsolutePath = Paths.get(Global.aguiSdkPath, AguiConstants.PATH_PLATFORMS
+										, AguiConstants.SDK_DIR_NAME_PREFIX + manifestInfo.versionCode
+										, AguiConstants.RELEASE_SDK_JAR_NAME).toFile().getAbsolutePath();
+								String exeContents = String.format("java -classpath %s -jar %s %s %s"
+										, outputPath, sdkAbsolutePath, outputPath
+										, manifestInfo.packageName);
+								File bat = new File(outputPath, Global.os.getExeFileName());
+								bat.createNewFile();
+								FileWriter writer = new FileWriter(bat);
+								writer.write(exeContents);
+								writer.close();
 								// FIXME : show success dialog
 								break;
 							}

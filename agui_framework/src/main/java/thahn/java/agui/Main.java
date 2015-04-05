@@ -12,13 +12,12 @@ import thahn.java.agui.utils.Log;
 public class Main {
 	
 	public static void main(String[] arguments) {
-		// ex) java -classpath D:\agui-sdk-windows\os\data\thahn.java.agui.test -jar agui_sdk.jar D:\agui-sdk-windows\os\data\thahn.java.agui.test thahn.java.agui.test thahn.java.agui.test.ApiDemos
-		if(arguments.length != 3) {
-			Log.e("wrong arguments. : projectPath, package, mainActivity fullname is needed.");
+		if(arguments.length != 2) {
+			Log.e("wrong arguments. : projectPath, package is needed.");
 		} else {
-			Log.i("args : " + arguments[0] + " " + arguments[1] + " " + arguments[2]);
+			Log.i("args : " + arguments[0] + " " + arguments[1]); // + " " + arguments[2]);
 			ApplicationController app = new ApplicationController();
-			app.create(arguments[0], arguments[1], arguments[2]);
+			app.create(arguments[0], arguments[1]); //, arguments[2]);
 		}
 		// for test
 //		{
@@ -26,9 +25,7 @@ public class Main {
 //			ApplicationController app = new ApplicationController();
 //			app.create(
 //					projectPath.getAbsolutePath(),
-//					"thahn.java.agui.test",
-//					"thahn.java.agui.test." +
-//					"ApiDemos"
+//					"thahn.java.agui.test"
 //					);
 //		} 
 		return ;

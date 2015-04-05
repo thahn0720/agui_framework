@@ -5,15 +5,18 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 import thahn.java.agui.AguiConstants;
 import thahn.java.agui.BuildTool;
 import thahn.java.agui.Global;
+import thahn.java.agui.OS;
 import thahn.java.agui.app.controller.HandlerThread;
 import thahn.java.agui.app.controller.Looper;
 import thahn.java.agui.exception.NotExistException;
 import thahn.java.agui.jmx.JmxConnectorHelper;
 import thahn.java.agui.res.ManifestParser;
+import thahn.java.agui.res.ManifestParser.ManifestInfo;
 import thahn.java.agui.res.RMaker;
 import thahn.java.agui.res.ResourcesManager;
 import thahn.java.agui.settings.AguiSettings;
@@ -43,8 +46,19 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 					"before executing agui app, AGUI_HOME should be defined like ANDROID_HOME." +
 					"click the setAguiHome batch file in sdk tool's folder");
 		}
+		// os 
+		Global.osName = System.getProperty("os.name");
+		Global.osArch = System.getProperty("os.arch");
+		Global.osVersion = System.getProperty("os.version");
+		for (OS os : OS.values()) {
+			if (os.matches(Global.osName)) {
+				Global.os = os;
+				break;
+			}
+		}
+		// agui 
 		Global.aguiHomePath = temp + AguiConstants.PATH_DATA;
-		//
+		// screen w h
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		Global.screenWidth = gd.getDisplayMode().getWidth();
 		Global.screenHeight = gd.getDisplayMode().getHeight();
@@ -57,11 +71,11 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 	 * @param projectPath
 	 * @param fullPackageName
 	 */
-	public void create(String projectPath, String projectPackageName, String fullPackageName) {
+	public void create(String projectPath, String projectPackageName) { //, String fullPackageName) {
 		try {
-			init(projectPath, projectPackageName, fullPackageName);
-			ActivityInfo info = ActivityManager.getInstance().getActivityInfo(fullPackageName); //ApplicationSetting.applicationInfo.width
-			Intent intent = new Intent(null, MyUtils.getClass(projectPath, fullPackageName));
+			init(projectPath, projectPackageName);
+			ActivityInfo info = ActivityManager.getInstance().getActivityInfo(ApplicationSetting.applicationInfo.mainActivity);//fullPackageName); 
+			Intent intent = new Intent(null, MyUtils.getClass(projectPath, ApplicationSetting.applicationInfo.mainActivity));//fullPackageName));
 			intent.putIntExtra(Intent.EXTRA_POSITION_RELATIVE_SCREEN, WindowPosition.CENTER | WindowPosition.MID);
 			createWindow("AGUI", info.width, info.height, intent);
 		} catch(Exception e) {
@@ -70,7 +84,7 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 		}
 	}
 	
-	private void init(String projectPath, String projectPackageName, String fullPackageName) throws ClassNotFoundException {
+	private void init(String projectPath, String projectPackageName) throws ClassNotFoundException {
 		// init resources
 		ResourcesManager.getInstance();
 		// init global constants
@@ -125,6 +139,16 @@ public class ApplicationController extends ContextThemeWrapper implements Window
 		// parse from aguiManifest.xml 
 		ManifestParser manifestParser = new ManifestParser(ResourcesManager.getInstance());
 		manifestParser.parse(Global.projectPath);
+		ManifestInfo manifestInfo = manifestParser.getManifestInfo();
+		// set app info
+		ApplicationSetting.applicationInfo.id = UUID.randomUUID().toString();
+		ApplicationSetting.applicationInfo.path = Global.projectPackageName;
+		ApplicationSetting.applicationInfo.appLabel = manifestInfo.appLabel;
+		ApplicationSetting.applicationInfo.appName = manifestInfo.appName;
+		ApplicationSetting.applicationInfo.packageName = Global.projectPackageName;
+		ApplicationSetting.applicationInfo.mainActivity = manifestInfo.mainActivity; // can not know in here
+		ApplicationSetting.applicationInfo.width = manifestInfo.width;
+		ApplicationSetting.applicationInfo.height = manifestInfo.height;
 		
 		Log.i("application id : " + ApplicationSetting.applicationInfo.id);
 		
